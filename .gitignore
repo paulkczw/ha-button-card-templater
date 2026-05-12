@@ -2,3 +2,4 @@ example.yml
 docs/
 __pycache__/
 *.pyc
+/icon.png
