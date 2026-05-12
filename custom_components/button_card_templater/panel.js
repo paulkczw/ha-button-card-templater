@@ -161,8 +161,12 @@
 .tb.danger{color:var(--bct-error);border-color:var(--bct-error)}\
 .tb.danger:hover{background:var(--bct-error);color:#fff}\
 .main{display:flex;flex:1;overflow:hidden}\
-.editor-pane{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--bct-border);min-width:0}\
-.preview-pane{flex:1;display:flex;flex-direction:column;overflow-y:auto;min-width:0}\
+.editor-pane{display:flex;flex-direction:column;min-width:200px;width:50%;overflow:hidden}\
+.splitter{width:6px;cursor:col-resize;background:var(--bct-border);position:relative;flex-shrink:0;transition:background .15s}\
+.splitter:hover,.splitter.active{background:var(--bct-accent)}\
+.splitter::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:32px;border-radius:1px;background:var(--bct-text2);opacity:.4}\
+.splitter:hover::after,.splitter.active::after{opacity:1;background:#fff}\
+.preview-pane{display:flex;flex-direction:column;overflow-y:auto;min-width:200px;flex:1}\
 .pane-header{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--bct-text2);padding:12px 16px 4px}\
 .pane-header.clickable{cursor:pointer;user-select:none}\
 .editor-wrapper{flex:1;display:flex;overflow:hidden;padding:0 8px 8px}\
@@ -291,6 +295,7 @@
         '    <div class="pane-header" id="editor-title">Template</div>' +
         '    <div class="editor-wrapper" id="editor-wrapper"></div>' +
         '  </div>' +
+        '  <div class="splitter" id="splitter"></div>' +
         '  <div class="preview-pane">' +
         '    <div class="controls-section">' +
         '      <div class="pane-header">Controls</div>' +
@@ -367,6 +372,48 @@
       this.shadowRoot.getElementById('btn-del').addEventListener('click', function () { self._deleteTemplate(); });
       this.shadowRoot.getElementById('btn-save').addEventListener('click', function () { self._save(); });
       this.shadowRoot.getElementById('btn-copy').addEventListener('click', function () { self._copy(); });
+      // ---- Splitter drag ----
+      var splitter = this.shadowRoot.getElementById('splitter');
+      var editorPane = this.shadowRoot.querySelector('.editor-pane');
+      var mainEl = this.shadowRoot.querySelector('.main');
+      splitter.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        splitter.classList.add('active');
+        var startX = e.clientX;
+        var startW = editorPane.offsetWidth;
+        var onMove = function (ev) {
+          var newW = startW + (ev.clientX - startX);
+          var maxW = mainEl.offsetWidth - 206; // 200 min + 6 splitter
+          editorPane.style.width = Math.max(200, Math.min(newW, maxW)) + 'px';
+        };
+        var onUp = function () {
+          splitter.classList.remove('active');
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+      // Touch support for mobile
+      splitter.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        splitter.classList.add('active');
+        var startX = e.touches[0].clientX;
+        var startW = editorPane.offsetWidth;
+        var onMove = function (ev) {
+          var newW = startW + (ev.touches[0].clientX - startX);
+          var maxW = mainEl.offsetWidth - 206;
+          editorPane.style.width = Math.max(200, Math.min(newW, maxW)) + 'px';
+        };
+        var onEnd = function () {
+          splitter.classList.remove('active');
+          document.removeEventListener('touchmove', onMove);
+          document.removeEventListener('touchend', onEnd);
+        };
+        document.addEventListener('touchmove', onMove);
+        document.addEventListener('touchend', onEnd);
+      });
+
       this.shadowRoot.getElementById('btn-add-attr').addEventListener('click', function () { self._addAttributeRow('', ''); });
       this.shadowRoot.getElementById('btn-add-entity').addEventListener('click', function () { self._addExtraEntity(); });
       this.shadowRoot.getElementById('state-buttons').addEventListener('click', function (e) {
