@@ -1,0 +1,14 @@
+{
+  "domain": "button_card_templater",
+  "name": "Button Card Templater",
+  "version": "0.1.0",
+  "documentation": "https://github.com/paulkczw/ha-button-card-templater",
+  "issue_tracker": "https://github.com/paulkczw/ha-button-card-templater/issues",
+  "codeowners": ["@paulkczw"],
+  "dependencies": ["frontend", "http"],
+  "config_flow": true,
+  "single_config_entry": true,
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "requirements": []
+}

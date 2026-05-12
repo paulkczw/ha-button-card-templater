@@ -1,0 +1,333 @@
+button_card_templates:
+  setup:
+    state:
+      - value: unavailable
+        icon: mdi:alert-circle-outline
+        styles:
+          state:
+            - text-decoration: line-through
+          label:
+            - text-decoration: line-through
+    styles:
+      name:
+        - font-family: null
+      label:
+        - font-family: null
+      state:
+        - font-family: null
+  switch_template:
+    template: setup
+    variables:
+      icon_on: '[[[ return entity.attributes.icon ]]]'
+      icon_off: '[[[ return entity.attributes.icon ]]]'
+      badge_on: mdi:toggle-switch
+      badge_off: mdi:toggle-switch-off-outline
+      name_on: Name On
+      name_off: Name Off
+      state_on: State On
+      state_off: State Off
+      color: var(--yellow)
+    icon: '[[[ return entity.attributes.icon ]]]'
+    show_label: false
+    show_state: true
+    tap_action:
+      action: toggle
+      haptic: success
+    hold_action:
+      action: more-info
+    state:
+      - value: 'on'
+        icon: '[[[ return variables.icon_on ]]]'
+        name: '[[[ return variables.name_on ]]]'
+        state_display: '[[[ return variables.state_on ]]]'
+        styles:
+          card:
+            - background-color: '[[[ return variables.color ]]]'
+      - value: 'off'
+        icon: '[[[ return variables.icon_off ]]]'
+        name: '[[[ return variables.name_off ]]]'
+        state_display: '[[[ return variables.state_off ]]]'
+        styles:
+          card:
+            - background-color: var(--contrast2)
+    custom_fields:
+      icon2:
+        card:
+          type: custom:button-card
+          icon: |
+            [[[
+              if (entity.state == "on"){
+                return variables.badge_on;
+              } else {
+                return variables.badge_off;
+              }
+            ]]]
+          styles:
+            card:
+              - background-color: var(--contrast1)
+              - width: 27px
+              - height: 27px
+            icon:
+              - width: 15px
+              - color: var(--contrast20)
+    styles:
+      grid:
+        - grid-template-areas: '"i s icon2" "n n n"'
+        - grid-template-columns: 20px 1fr 1fr
+        - grid-template-rows: 1fr min-content
+      icon:
+        - width: 20px
+        - margin-top: 7px
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      img_cell:
+        - justify-content: flex-start
+      name:
+        - justify-self: start
+        - font-size: 11px
+        - margin-bottom: 3px
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+        - opacity: 0.7
+      card:
+        - height: 75px
+        - background-color: |
+            [[[
+              if (entity.state == "on") return "var(variables.color)";
+              else return "var(--contrast2)";
+            ]]]
+        - box-shadow: none
+        - border-radius: 24px
+        - padding: 12px 0 12px 14px
+        - z-index: 1
+      state:
+        - justify-self: start
+        - font-size: 20px
+        - margin-top: 11px
+        - padding-left: 3px
+        - font-weight: 500
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      custom_fields:
+        icon2:
+          - margin-top: '-20px'
+          - justify-self: end
+          - align-self: center
+          - width: 24px
+          - padding-right: 10px
+          - color: |
+              [[[
+                if (entity.state == "on") return "var(--black)";
+                else return "var(--contrast20)";
+              ]]]
+  switch_label_template:
+    template: setup
+    variables:
+      icon_on: '[[[ return entity.attributes.icon ]]]'
+      icon_off: '[[[ return entity.attributes.icon ]]]'
+      color: var(--yellow)
+    icon: '[[[ return entity.attributes.icon ]]]'
+    show_label: true
+    show_state: false
+    tap_action:
+      action: toggle
+      haptic: success
+    hold_action:
+      action: more-info
+    state:
+      - value: 'on'
+        icon: '[[[ return variables.icon_on ]]]'
+        styles:
+          card:
+            - background-color: '[[[ return variables.color ]]]'
+      - value: 'off'
+        icon: '[[[ return variables.icon_off ]]]'
+        styles:
+          card:
+            - background-color: var(--contrast2)
+    custom_fields:
+      icon2:
+        card:
+          type: custom:button-card
+          icon: |
+            [[[
+              if (entity.state == "on"){
+                return "mdi:toggle-switch";
+              } else {
+                return "mdi:toggle-switch-off-outline";
+              }
+            ]]]
+          styles:
+            card:
+              - background-color: var(--contrast1)
+              - width: 27px
+              - height: 27px
+            icon:
+              - width: 15px
+              - color: var(--contrast20)
+    styles:
+      grid:
+        - grid-template-areas: '"i l icon2" "n n n"'
+        - grid-template-columns: 20px 1fr 1fr
+        - grid-template-rows: 1fr min-content
+      icon:
+        - width: 20px
+        - margin-top: 7px
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      img_cell:
+        - justify-content: flex-start
+      name:
+        - justify-self: start
+        - font-size: 11px
+        - margin-bottom: 3px
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+        - opacity: 0.7
+      card:
+        - height: 75px
+        - background-color: |
+            [[[
+              if (entity.state == "on") return "var(--yellow)";
+              else return "var(--contrast2)";
+            ]]]
+        - box-shadow: none
+        - border-radius: 24px
+        - padding: 12px 0 12px 14px
+        - z-index: 1
+      label:
+        - justify-self: start
+        - font-size: 20px
+        - margin-top: 11px
+        - padding-left: 3px
+        - font-weight: 500
+        - color: |
+            [[[
+              if (entity.state == "on") return "var(--black)";
+              else return "var(--contrast20)";
+            ]]]
+      custom_fields:
+        icon2:
+          - margin-top: '-20px'
+          - justify-self: end
+          - align-self: center
+          - width: 24px
+          - padding-right: 10px
+          - color: |
+              [[[
+                if (entity.state == "on") return "var(--black)";
+                else return "var(--contrast20)";
+              ]]]
+  button_template:
+    template: setup
+    variables:
+      icon2: '[[[ return entity.attributes.icon ]]]'
+      icon_on: '[[[ return entity.attributes.icon ]]]'
+      icon_off: '[[[ return entity.attributes.icon ]]]'
+      state_on: 'on'
+      state_off: 'off'
+      background_color_on: var(--yellow)
+      background_color_off: var(--contrast2)
+      color_on: var(--black)
+      color_off: var(--contrast20)
+    type: custom:button-card
+    icon: '[[[ return entity.attributes.icon ]]]'
+    show_label: true
+    show_icon: false
+    tap_action:
+      action: more-info
+      haptic: success
+    hold_action:
+      action: more-info
+    state:
+      - value: '[[[ return variables.state_on ]]]'
+        icon: '[[[ return variables.icon_on ]]]'
+        styles:
+          card:
+            - background-color: '[[[ return variables.background_color_on ]]]'
+          name:
+            - color: '[[[ return variables.color_on ]]]'
+          label:
+            - color: '[[[ return variables.color_on ]]]'
+          icon:
+            - color: '[[[ return variables.color_on ]]]'
+      - value: '[[[ return variables.state_off ]]]'
+        icon: '[[[ return variables.icon_off ]]]'
+        styles:
+          card:
+            - background-color: '[[[ return variables.background_color_off ]]]'
+          name:
+            - color: '[[[ return variables.color_off ]]]'
+          label:
+            - color: '[[[ return variables.color_off ]]]'
+          icon:
+            - color: '[[[ return variables.color_off ]]]'
+    custom_fields:
+      icon2:
+        card:
+          type: custom:button-card
+          icon: '[[[ return variables.icon2 ]]]'
+          styles:
+            card:
+              - background-color: var(--contrast1)
+              - width: 27px
+              - height: 27px
+            icon:
+              - width: 15px
+              - color: var(--contrast20)
+    styles:
+      grid:
+        - grid-template-areas: '"l l icon2" "n n n"'
+        - grid-template-columns: 14px 1fr 1fr
+        - grid-template-rows: 1fr min-content
+      icon:
+        - width: 14px
+        - margin-bottom: 5px
+        - color: '[[[ return variables.color_off ]]]'
+      img_cell:
+        - justify-content: flex-start
+      name:
+        - justify-self: start
+        - font-size: 11px
+        - margin-bottom: 2px
+        - color: '[[[ return variables.color_off ]]]'
+        - opacity: 0.7
+      card:
+        - height: 75px
+        - background-color: '[[[ return variables.background_color_off ]]]'
+        - box-shadow: none
+        - border-radius: 24px
+        - padding: 12px 0 12px 14px
+      label:
+        - justify-self: start
+        - font-size: 20px
+        - margin-top: 11px
+        - font-weight: 500
+        - color: '[[[ return variables.color_off ]]]'
+      custom_fields:
+        icon2:
+          - margin-top: '-20px'
+          - justify-self: end
+          - align-self: center
+          - width: 24px
+          - padding-right: 10px
+          - color: |
+              [[[
+                if (entity.state == "on") return "var(--black)";
+                else return "var(--contrast20)";
+              ]]]
