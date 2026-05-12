@@ -144,1275 +144,643 @@
   }
 
   // ============================================================
-  // Default example YAML
-  // ============================================================
-  var DEFAULT_YAML =
-    'button_card_templates:\n' +
-    '  base:\n' +
-    '    styles:\n' +
-    '      card:\n' +
-    '        - border-radius: 16px\n' +
-    '        - padding: 12px\n' +
-    '        - box-shadow: none\n' +
-    '      name:\n' +
-    '        - font-size: 13px\n' +
-    '      icon:\n' +
-    '        - width: 24px\n' +
-    '  my_switch:\n' +
-    '    template: base\n' +
-    '    variables:\n' +
-    '      color_on: var(--primary-color)\n' +
-    '      color_off: var(--disabled-color)\n' +
-    '    show_state: true\n' +
-    '    show_name: true\n' +
-    '    tap_action:\n' +
-    '      action: toggle\n' +
-    '    state:\n' +
-    '      - value: "on"\n' +
-    '        icon: mdi:lightbulb\n' +
-    '        styles:\n' +
-    '          card:\n' +
-    '            - background-color: "[[[ return variables.color_on ]]]"\n' +
-    '          icon:\n' +
-    '            - color: white\n' +
-    '      - value: "off"\n' +
-    '        icon: mdi:lightbulb-outline\n' +
-    '        styles:\n' +
-    '          card:\n' +
-    '            - background-color: "[[[ return variables.color_off ]]]"\n';
-
-  // ============================================================
   // CSS Styles
   // ============================================================
-  function getStyles() {
-    return (
-      ":host {\n" +
-      "  display: block;\n" +
-      "  height: 100vh;\n" +
-      "  background: var(--primary-background-color, #fafafa);\n" +
-      "  color: var(--primary-text-color, #212121);\n" +
-      "  font-family: var(--paper-font-body1_-_font-family, Roboto, sans-serif);\n" +
-      "  --bct-accent: var(--primary-color, #03a9f4);\n" +
-      "  --bct-surface: var(--card-background-color, #fff);\n" +
-      "  --bct-border: var(--divider-color, #e0e0e0);\n" +
-      "  --bct-text2: var(--secondary-text-color, #727272);\n" +
-      "  --bct-error: var(--error-color, #db4437);\n" +
-      "  --bct-radius: 12px;\n" +
-      "}\n" +
-      ".container {\n" +
-      "  display: flex;\n" +
-      "  flex-direction: column;\n" +
-      "  height: 100%;\n" +
-      "  overflow: hidden;\n" +
-      "}\n" +
-      /* ---- Toolbar ---- */
-      ".toolbar {\n" +
-      "  display: flex;\n" +
-      "  align-items: center;\n" +
-      "  justify-content: space-between;\n" +
-      "  padding: 0 16px;\n" +
-      "  height: 56px;\n" +
-      "  min-height: 56px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  border-bottom: 1px solid var(--bct-border);\n" +
-      "  gap: 12px;\n" +
-      "  flex-wrap: wrap;\n" +
-      "}\n" +
-      ".toolbar-left {\n" +
-      "  display: flex;\n" +
-      "  align-items: center;\n" +
-      "  gap: 16px;\n" +
-      "  flex: 1;\n" +
-      "  min-width: 0;\n" +
-      "}\n" +
-      ".toolbar-right {\n" +
-      "  display: flex;\n" +
-      "  align-items: center;\n" +
-      "  gap: 8px;\n" +
-      "}\n" +
-      ".title {\n" +
-      "  font-size: 20px;\n" +
-      "  font-weight: 500;\n" +
-      "  white-space: nowrap;\n" +
-      "}\n" +
-      ".template-select {\n" +
-      "  padding: 6px 12px;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: 8px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-size: 14px;\n" +
-      "  min-width: 180px;\n" +
-      "  cursor: pointer;\n" +
-      "}\n" +
-      ".toolbar-btn {\n" +
-      "  padding: 6px 16px;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: 8px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-size: 13px;\n" +
-      "  cursor: pointer;\n" +
-      "  transition: background 0.15s;\n" +
-      "  white-space: nowrap;\n" +
-      "}\n" +
-      ".toolbar-btn:hover {\n" +
-      "  background: var(--bct-border);\n" +
-      "}\n" +
-      ".toolbar-btn.primary {\n" +
-      "  background: var(--bct-accent);\n" +
-      "  color: #fff;\n" +
-      "  border-color: var(--bct-accent);\n" +
-      "}\n" +
-      /* ---- Main Layout ---- */
-      ".main {\n" +
-      "  display: flex;\n" +
-      "  flex: 1;\n" +
-      "  overflow: hidden;\n" +
-      "}\n" +
-      ".editor-pane {\n" +
-      "  flex: 1;\n" +
-      "  display: flex;\n" +
-      "  flex-direction: column;\n" +
-      "  border-right: 1px solid var(--bct-border);\n" +
-      "  min-width: 0;\n" +
-      "}\n" +
-      ".preview-pane {\n" +
-      "  flex: 1;\n" +
-      "  display: flex;\n" +
-      "  flex-direction: column;\n" +
-      "  overflow-y: auto;\n" +
-      "  min-width: 0;\n" +
-      "}\n" +
-      ".pane-header {\n" +
-      "  font-size: 12px;\n" +
-      "  font-weight: 600;\n" +
-      "  text-transform: uppercase;\n" +
-      "  letter-spacing: 0.5px;\n" +
-      "  color: var(--bct-text2);\n" +
-      "  padding: 12px 16px 4px;\n" +
-      "}\n" +
-      ".pane-header.clickable {\n" +
-      "  cursor: pointer;\n" +
-      "  user-select: none;\n" +
-      "}\n" +
-      /* ---- Editor ---- */
-      ".editor-wrapper {\n" +
-      "  flex: 1;\n" +
-      "  display: flex;\n" +
-      "  overflow: hidden;\n" +
-      "  padding: 0 8px 8px;\n" +
-      "}\n" +
-      ".editor-wrapper ha-code-editor {\n" +
-      "  flex: 1;\n" +
-      "  --code-mirror-max-height: none;\n" +
-      "}\n" +
-      ".yaml-textarea {\n" +
-      "  flex: 1;\n" +
-      "  width: 100%;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: var(--bct-radius);\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-family: 'Fira Code', 'Source Code Pro', 'Consolas', monospace;\n" +
-      "  font-size: 13px;\n" +
-      "  line-height: 1.5;\n" +
-      "  padding: 12px;\n" +
-      "  resize: none;\n" +
-      "  tab-size: 2;\n" +
-      "  outline: none;\n" +
-      "}\n" +
-      ".yaml-textarea:focus {\n" +
-      "  border-color: var(--bct-accent);\n" +
-      "}\n" +
-      /* ---- Controls ---- */
-      ".controls-section {\n" +
-      "  padding: 0 16px 8px;\n" +
-      "  border-bottom: 1px solid var(--bct-border);\n" +
-      "}\n" +
-      ".control-group {\n" +
-      "  margin-bottom: 12px;\n" +
-      "}\n" +
-      ".control-group > label {\n" +
-      "  display: block;\n" +
-      "  font-size: 12px;\n" +
-      "  font-weight: 500;\n" +
-      "  color: var(--bct-text2);\n" +
-      "  margin-bottom: 4px;\n" +
-      "}\n" +
-      ".state-buttons {\n" +
-      "  display: flex;\n" +
-      "  gap: 6px;\n" +
-      "  flex-wrap: wrap;\n" +
-      "  align-items: center;\n" +
-      "}\n" +
-      ".state-btn {\n" +
-      "  padding: 4px 12px;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: 16px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-size: 12px;\n" +
-      "  cursor: pointer;\n" +
-      "  transition: all 0.15s;\n" +
-      "}\n" +
-      ".state-btn:hover {\n" +
-      "  background: var(--bct-border);\n" +
-      "}\n" +
-      ".state-btn.active {\n" +
-      "  background: var(--bct-accent);\n" +
-      "  color: #fff;\n" +
-      "  border-color: var(--bct-accent);\n" +
-      "}\n" +
-      ".custom-state-input {\n" +
-      "  padding: 4px 10px;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: 16px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-size: 12px;\n" +
-      "  width: 100px;\n" +
-      "  outline: none;\n" +
-      "}\n" +
-      ".custom-state-input:focus {\n" +
-      "  border-color: var(--bct-accent);\n" +
-      "}\n" +
-      "#entity-picker-wrapper ha-entity-picker {\n" +
-      "  width: 100%;\n" +
-      "}\n" +
-      ".entity-input {\n" +
-      "  width: 100%;\n" +
-      "  padding: 8px 12px;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: 8px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-size: 14px;\n" +
-      "  outline: none;\n" +
-      "  box-sizing: border-box;\n" +
-      "}\n" +
-      ".entity-input:focus {\n" +
-      "  border-color: var(--bct-accent);\n" +
-      "}\n" +
-      /* ---- Variables ---- */
-      ".var-row {\n" +
-      "  display: flex;\n" +
-      "  align-items: center;\n" +
-      "  gap: 8px;\n" +
-      "  margin-bottom: 6px;\n" +
-      "}\n" +
-      ".var-key {\n" +
-      "  font-size: 12px;\n" +
-      "  font-family: monospace;\n" +
-      "  color: var(--bct-text2);\n" +
-      "  min-width: 100px;\n" +
-      "  text-align: right;\n" +
-      "}\n" +
-      ".var-value {\n" +
-      "  flex: 1;\n" +
-      "  padding: 4px 8px;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: 6px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-family: monospace;\n" +
-      "  font-size: 12px;\n" +
-      "  outline: none;\n" +
-      "}\n" +
-      ".var-value:focus {\n" +
-      "  border-color: var(--bct-accent);\n" +
-      "}\n" +
-      /* ---- Preview ---- */
-      ".preview-section {\n" +
-      "  flex: 1;\n" +
-      "  display: flex;\n" +
-      "  flex-direction: column;\n" +
-      "  min-height: 200px;\n" +
-      "}\n" +
-      ".preview-container {\n" +
-      "  flex: 1;\n" +
-      "  display: flex;\n" +
-      "  align-items: flex-start;\n" +
-      "  justify-content: center;\n" +
-      "  padding: 24px 16px;\n" +
-      "  overflow: auto;\n" +
-      "}\n" +
-      ".preview-container > * {\n" +
-      "  max-width: 300px;\n" +
-      "  width: 100%;\n" +
-      "}\n" +
-      ".preview-placeholder {\n" +
-      "  color: var(--bct-text2);\n" +
-      "  font-size: 14px;\n" +
-      "  text-align: center;\n" +
-      "  padding: 40px 0;\n" +
-      "}\n" +
-      ".preview-warning {\n" +
-      "  color: var(--warning-color, #ff9800);\n" +
-      "  font-size: 13px;\n" +
-      "  padding: 8px 16px;\n" +
-      "  text-align: center;\n" +
-      "}\n" +
-      /* ---- Resolved config ---- */
-      ".resolved-section {\n" +
-      "  border-top: 1px solid var(--bct-border);\n" +
-      "}\n" +
-      ".resolved-section details {\n" +
-      "  padding-bottom: 8px;\n" +
-      "}\n" +
-      ".resolved-section summary {\n" +
-      "  list-style: none;\n" +
-      "  cursor: pointer;\n" +
-      "}\n" +
-      ".resolved-section summary::-webkit-details-marker { display: none; }\n" +
-      ".resolved-section summary::before {\n" +
-      '  content: "\\25B6";\n' +
-      "  display: inline-block;\n" +
-      "  margin-right: 6px;\n" +
-      "  font-size: 10px;\n" +
-      "  transition: transform 0.2s;\n" +
-      "}\n" +
-      ".resolved-section details[open] summary::before {\n" +
-      "  transform: rotate(90deg);\n" +
-      "}\n" +
-      ".resolved-config {\n" +
-      "  margin: 0 16px 8px;\n" +
-      "  padding: 12px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: var(--bct-radius);\n" +
-      "  font-family: monospace;\n" +
-      "  font-size: 12px;\n" +
-      "  line-height: 1.5;\n" +
-      "  overflow-x: auto;\n" +
-      "  white-space: pre-wrap;\n" +
-      "  max-height: 300px;\n" +
-      "  overflow-y: auto;\n" +
-      "}\n" +
-      /* ---- Error bar ---- */
-      ".error-bar {\n" +
-      "  padding: 8px 16px;\n" +
-      "  background: var(--bct-error);\n" +
-      "  color: #fff;\n" +
-      "  font-size: 13px;\n" +
-      "  font-family: monospace;\n" +
-      "  white-space: pre-wrap;\n" +
-      "  max-height: 80px;\n" +
-      "  overflow-y: auto;\n" +
-      "}\n" +
-      /* ---- Import Modal ---- */
-      ".modal-overlay {\n" +
-      "  position: fixed;\n" +
-      "  top: 0; left: 0; right: 0; bottom: 0;\n" +
-      "  background: rgba(0,0,0,0.5);\n" +
-      "  display: flex;\n" +
-      "  align-items: center;\n" +
-      "  justify-content: center;\n" +
-      "  z-index: 1000;\n" +
-      "}\n" +
-      ".modal {\n" +
-      "  background: var(--bct-surface);\n" +
-      "  border-radius: var(--bct-radius);\n" +
-      "  padding: 24px;\n" +
-      "  min-width: 350px;\n" +
-      "  max-width: 500px;\n" +
-      "  box-shadow: 0 8px 32px rgba(0,0,0,0.3);\n" +
-      "}\n" +
-      ".modal h3 {\n" +
-      "  margin: 0 0 16px;\n" +
-      "  font-size: 18px;\n" +
-      "}\n" +
-      ".modal-select {\n" +
-      "  width: 100%;\n" +
-      "  padding: 8px 12px;\n" +
-      "  border: 1px solid var(--bct-border);\n" +
-      "  border-radius: 8px;\n" +
-      "  background: var(--bct-surface);\n" +
-      "  color: var(--primary-text-color);\n" +
-      "  font-size: 14px;\n" +
-      "  margin-bottom: 16px;\n" +
-      "}\n" +
-      ".modal-buttons {\n" +
-      "  display: flex;\n" +
-      "  justify-content: flex-end;\n" +
-      "  gap: 8px;\n" +
-      "}\n"
-    );
-  }
+  var STYLES = "\
+:host{display:block;height:100vh;background:var(--primary-background-color,#fafafa);color:var(--primary-text-color,#212121);font-family:var(--paper-font-body1_-_font-family,Roboto,sans-serif);--bct-accent:var(--primary-color,#03a9f4);--bct-surface:var(--card-background-color,#fff);--bct-border:var(--divider-color,#e0e0e0);--bct-text2:var(--secondary-text-color,#727272);--bct-error:var(--error-color,#db4437);--bct-radius:12px}\
+.container{display:flex;flex-direction:column;height:100%;overflow:hidden}\
+.toolbar{display:flex;align-items:center;padding:0 16px;min-height:56px;background:var(--bct-surface);border-bottom:1px solid var(--bct-border);gap:12px;flex-wrap:wrap}\
+.title{font-size:20px;font-weight:500;white-space:nowrap;margin-right:8px}\
+.tb-group{display:flex;align-items:center;gap:6px}\
+.tb-group label{font-size:12px;font-weight:500;color:var(--bct-text2);white-space:nowrap}\
+.tb-select{padding:6px 12px;border:1px solid var(--bct-border);border-radius:8px;background:var(--bct-surface);color:var(--primary-text-color);font-size:14px;min-width:140px;cursor:pointer}\
+.tb-spacer{flex:1}\
+.tb{padding:6px 14px;border:1px solid var(--bct-border);border-radius:8px;background:var(--bct-surface);color:var(--primary-text-color);font-size:13px;cursor:pointer;transition:background .15s;white-space:nowrap}\
+.tb:hover{background:var(--bct-border)}\
+.tb.primary{background:var(--bct-accent);color:#fff;border-color:var(--bct-accent)}\
+.tb.danger{color:var(--bct-error);border-color:var(--bct-error)}\
+.tb.danger:hover{background:var(--bct-error);color:#fff}\
+.main{display:flex;flex:1;overflow:hidden}\
+.editor-pane{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--bct-border);min-width:0}\
+.preview-pane{flex:1;display:flex;flex-direction:column;overflow-y:auto;min-width:0}\
+.pane-header{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--bct-text2);padding:12px 16px 4px}\
+.pane-header.clickable{cursor:pointer;user-select:none}\
+.editor-wrapper{flex:1;display:flex;overflow:hidden;padding:0 8px 8px}\
+.editor-wrapper ha-code-editor{flex:1;--code-mirror-max-height:none}\
+.yaml-textarea{flex:1;width:100%;border:1px solid var(--bct-border);border-radius:var(--bct-radius);background:var(--bct-surface);color:var(--primary-text-color);font-family:'Fira Code','Source Code Pro',Consolas,monospace;font-size:13px;line-height:1.5;padding:12px;resize:none;tab-size:2;outline:none}\
+.yaml-textarea:focus{border-color:var(--bct-accent)}\
+.controls-section{padding:0 16px 8px;border-bottom:1px solid var(--bct-border)}\
+.control-group{margin-bottom:12px}\
+.control-group>label{display:block;font-size:12px;font-weight:500;color:var(--bct-text2);margin-bottom:4px}\
+.state-buttons{display:flex;gap:6px;flex-wrap:wrap;align-items:center}\
+.state-btn{padding:4px 12px;border:1px solid var(--bct-border);border-radius:16px;background:var(--bct-surface);color:var(--primary-text-color);font-size:12px;cursor:pointer;transition:all .15s}\
+.state-btn:hover{background:var(--bct-border)}\
+.state-btn.active{background:var(--bct-accent);color:#fff;border-color:var(--bct-accent)}\
+.custom-state-input{padding:4px 10px;border:1px solid var(--bct-border);border-radius:16px;background:var(--bct-surface);color:var(--primary-text-color);font-size:12px;width:100px;outline:none}\
+.custom-state-input:focus{border-color:var(--bct-accent)}\
+#entity-picker-wrapper ha-entity-picker{width:100%}\
+.entity-input{width:100%;padding:8px 12px;border:1px solid var(--bct-border);border-radius:8px;background:var(--bct-surface);color:var(--primary-text-color);font-size:14px;outline:none;box-sizing:border-box}\
+.entity-input:focus{border-color:var(--bct-accent)}\
+.var-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}\
+.var-key{font-size:12px;font-family:monospace;color:var(--bct-text2);min-width:100px;text-align:right}\
+.var-value{flex:1;padding:4px 8px;border:1px solid var(--bct-border);border-radius:6px;background:var(--bct-surface);color:var(--primary-text-color);font-family:monospace;font-size:12px;outline:none}\
+.var-value:focus{border-color:var(--bct-accent)}\
+.preview-section{flex:1;display:flex;flex-direction:column;min-height:200px}\
+.preview-container{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}\
+.preview-container>*{max-width:300px;width:100%}\
+.preview-placeholder{color:var(--bct-text2);font-size:14px;text-align:center;padding:40px 0}\
+.preview-warning{color:var(--warning-color,#ff9800);font-size:13px;padding:8px 16px;text-align:center}\
+.resolved-section{border-top:1px solid var(--bct-border)}\
+.resolved-section details{padding-bottom:8px}\
+.resolved-section summary{list-style:none;cursor:pointer}\
+.resolved-section summary::-webkit-details-marker{display:none}\
+.resolved-section summary::before{content:'\\25B6';display:inline-block;margin-right:6px;font-size:10px;transition:transform .2s}\
+.resolved-section details[open] summary::before{transform:rotate(90deg)}\
+.resolved-config{margin:0 16px 8px;padding:12px;background:var(--bct-surface);border:1px solid var(--bct-border);border-radius:var(--bct-radius);font-family:monospace;font-size:12px;line-height:1.5;overflow-x:auto;white-space:pre-wrap;max-height:300px;overflow-y:auto}\
+.error-bar{padding:8px 16px;background:var(--bct-error);color:#fff;font-size:13px;font-family:monospace;white-space:pre-wrap;max-height:80px;overflow-y:auto}\
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000}\
+.modal{background:var(--bct-surface);border-radius:var(--bct-radius);padding:24px;min-width:300px;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,.3)}\
+.modal h3{margin:0 0 16px;font-size:18px}\
+.modal input[type=text]{width:100%;padding:8px 12px;border:1px solid var(--bct-border);border-radius:8px;background:var(--bct-surface);color:var(--primary-text-color);font-size:14px;box-sizing:border-box;outline:none;margin-bottom:16px}\
+.modal-buttons{display:flex;justify-content:flex-end;gap:8px}\
+.attr-row{display:flex;align-items:center;gap:4px;margin-bottom:4px}\
+.attr-row input{flex:1;padding:3px 6px;border:1px solid var(--bct-border);border-radius:4px;background:var(--bct-surface);color:var(--primary-text-color);font-family:monospace;font-size:11px;outline:none;min-width:0}\
+.attr-row input:focus{border-color:var(--bct-accent)}\
+.attr-row .rm{background:none;border:none;color:var(--bct-error);cursor:pointer;font-size:14px;padding:2px 4px;line-height:1}\
+.add-btn{background:none;border:1px dashed var(--bct-border);border-radius:6px;color:var(--bct-text2);font-size:11px;padding:4px 10px;cursor:pointer;width:100%}\
+.add-btn:hover{border-color:var(--bct-accent);color:var(--bct-accent)}\
+.extra-entity{border:1px solid var(--bct-border);border-radius:8px;padding:6px 8px;margin-bottom:6px}\
+.extra-entity-header{display:flex;align-items:center;gap:4px;margin-bottom:4px}\
+.extra-entity-header input{flex:1;padding:3px 6px;border:1px solid var(--bct-border);border-radius:4px;background:var(--bct-surface);color:var(--primary-text-color);font-family:monospace;font-size:11px;outline:none}\
+.extra-entity-header input:focus{border-color:var(--bct-accent)}\
+.section-toggle{font-size:11px;color:var(--bct-text2);cursor:pointer;user-select:none;padding:4px 0}\
+.section-toggle:hover{color:var(--bct-accent)}\
+";
 
   // ============================================================
-  // Panel Custom Element (class-based, required for Custom Elements v1)
+  // Panel Custom Element
   // ============================================================
   class ButtonCardTemplaterPanel extends HTMLElement {
     constructor() {
       super();
       this.attachShadow({ mode: "open" });
       this._hass = null;
-      this._narrow = false;
-      this._panel = null;
       this._jsyaml = null;
-      this._templates = {};
+      this._allTemplates = {};       // { name: configObj } -- all templates in memory
+      this._selectedDashboard = null; // url_path (null = default lovelace)
       this._selectedTemplate = "";
       this._selectedEntity = "";
       this._stateOverride = "";
       this._variableOverrides = {};
-      this._error = null;
+      this._attributeOverrides = {};  // { key: value } for main entity attributes
+      this._extraEntities = [];       // [ { entity_id, state, attributes:{} } ] for states[...] mocks
       this._debounceTimer = null;
       this._initialized = false;
       this._cardEl = null;
-      this._editor = null; // { element, getValue, setValue }
-      this._sourceDashboard = null; // url_path of imported dashboard (null = default)
+      this._editor = null;
+      this._skipNextCommit = false;   // prevent commit loop on programmatic editor set
     }
 
-    // ---- Property: hass (set by HA frontend) ----
     set hass(hass) {
       this._hass = hass;
-      var picker = this.shadowRoot.querySelector("ha-entity-picker");
+      var picker = this.shadowRoot && this.shadowRoot.querySelector("ha-entity-picker");
       if (picker) picker.hass = hass;
-      if (this._cardEl && hass) {
-        this._cardEl.hass = this._buildPreviewHass();
-      }
+      if (this._cardEl && hass) this._cardEl.hass = this._buildPreviewHass();
+      // Auto-load dashboards on first hass
+      if (hass && this._initialized && !this._dashboardsLoaded) this._loadDashboards();
     }
-
-    set narrow(v) {
-      this._narrow = v;
-    }
-
-    set panel(v) {
-      this._panel = v;
-    }
+    set narrow(v) {}
+    set panel(v) {}
 
     // ---- Lifecycle ----
     connectedCallback() {
       var self = this;
-      loadJsYaml()
-        .then(function (jsyaml) {
-          self._jsyaml = jsyaml;
-          self._buildUI();
-          self._initialized = true;
-          self._setEditorValue(DEFAULT_YAML);
-          self._parseAndUpdate();
-        })
-        .catch(function (err) {
-          self.shadowRoot.innerHTML =
-            '<div style="padding:32px;color:red;">Error loading dependencies: ' +
-            err.message +
-            "</div>";
-        });
+      loadJsYaml().then(function (y) {
+        self._jsyaml = y;
+        self._buildUI();
+        self._initialized = true;
+        if (self._hass) self._loadDashboards();
+      }).catch(function (e) {
+        self.shadowRoot.innerHTML = '<div style="padding:32px;color:red;">Error: ' + e.message + '</div>';
+      });
     }
 
     // ---- Build UI ----
     _buildUI() {
-      var shadow = this.shadowRoot;
-      shadow.innerHTML = "";
+      var s = this.shadowRoot;
+      s.innerHTML = '';
+      var style = document.createElement('style');
+      style.textContent = STYLES;
+      s.appendChild(style);
 
-      var style = document.createElement("style");
-      style.textContent = getStyles();
-      shadow.appendChild(style);
-
-      var container = document.createElement("div");
-      container.className = "container";
-      container.innerHTML =
+      var c = document.createElement('div');
+      c.className = 'container';
+      c.innerHTML =
         '<div class="toolbar">' +
-        '  <div class="toolbar-left">' +
-        '    <span class="title">Button Card Templater</span>' +
-        '    <select id="template-select" class="template-select">' +
-        '      <option value="">-- Select Template --</option>' +
-        "    </select>" +
-        "  </div>" +
-        '  <div class="toolbar-right">' +
-        '    <button id="btn-import" class="toolbar-btn">Import</button>' +
-        '    <button id="btn-save" class="toolbar-btn primary">Save to Dashboard</button>' +
-        '    <button id="btn-export" class="toolbar-btn">Export</button>' +
-        '    <button id="btn-copy" class="toolbar-btn">Copy</button>' +
-        "  </div>" +
-        "</div>" +
+        '  <span class="title">Card Templater</span>' +
+        '  <div class="tb-group"><label>Dashboard</label><select id="sel-dash" class="tb-select"></select></div>' +
+        '  <div class="tb-group"><label>Template</label><select id="sel-tpl" class="tb-select"></select></div>' +
+        '  <button id="btn-new" class="tb">+ New</button>' +
+        '  <button id="btn-del" class="tb danger">Delete</button>' +
+        '  <div class="tb-spacer"></div>' +
+        '  <button id="btn-save" class="tb primary">Save</button>' +
+        '  <button id="btn-copy" class="tb">Copy</button>' +
+        '</div>' +
         '<div class="main">' +
         '  <div class="editor-pane">' +
-        '    <div class="pane-header">Templates YAML</div>' +
+        '    <div class="pane-header" id="editor-title">Template</div>' +
         '    <div class="editor-wrapper" id="editor-wrapper"></div>' +
-        "  </div>" +
+        '  </div>' +
         '  <div class="preview-pane">' +
         '    <div class="controls-section">' +
         '      <div class="pane-header">Controls</div>' +
-        '      <div class="control-group">' +
-        "        <label>Entity</label>" +
-        '        <div id="entity-picker-wrapper"></div>' +
-        "      </div>" +
-        '      <div class="control-group">' +
-        "        <label>State Override</label>" +
+        '      <div class="control-group"><label>Entity</label><div id="entity-picker-wrapper"></div></div>' +
+        '      <div class="control-group"><label>State Override</label>' +
         '        <div class="state-buttons" id="state-buttons">' +
         '          <button class="state-btn active" data-state="">Auto</button>' +
         '          <button class="state-btn" data-state="on">on</button>' +
         '          <button class="state-btn" data-state="off">off</button>' +
         '          <button class="state-btn" data-state="unavailable">unavailable</button>' +
         '          <input type="text" id="custom-state" placeholder="custom..." class="custom-state-input">' +
-        "        </div>" +
-        "      </div>" +
-        '      <div class="control-group" id="variables-section" style="display:none">' +
-        "        <label>Variables</label>" +
-        '        <div id="variables-editor"></div>' +
-        "      </div>" +
-        "    </div>" +
-        '    <div class="preview-section">' +
-        '      <div class="pane-header">Preview</div>' +
-        '      <div id="preview-container" class="preview-container">' +
-        '        <div class="preview-placeholder">Select a template to preview</div>' +
-        "      </div>" +
-        "    </div>" +
-        '    <div class="resolved-section">' +
-        "      <details>" +
-        '        <summary class="pane-header clickable">Resolved Config</summary>' +
-        '        <pre id="resolved-config" class="resolved-config">Select a template</pre>' +
-        "      </details>" +
-        "    </div>" +
-        "  </div>" +
-        "</div>" +
+        '        </div>' +
+        '      </div>' +
+        '      <div class="control-group" id="variables-section" style="display:none"><label>Variables</label><div id="variables-editor"></div></div>' +
+        '      <div class="control-group"><label>Entity Attributes</label><div id="attr-editor"></div><button class="add-btn" id="btn-add-attr">+ Add Attribute</button></div>' +
+        '      <div class="control-group"><label>Extra Entities <span style="font-weight:400;opacity:.7">(for states[...] access)</span></label><div id="extra-entities"></div><button class="add-btn" id="btn-add-entity">+ Add Entity</button></div>' +
+        '    </div>' +
+        '    <div class="preview-section"><div class="pane-header">Preview</div>' +
+        '      <div id="preview-container" class="preview-container"><div class="preview-placeholder">Select a dashboard to start</div></div>' +
+        '    </div>' +
+        '    <div class="resolved-section"><details><summary class="pane-header clickable">Resolved Config</summary>' +
+        '      <pre id="resolved-config" class="resolved-config"></pre></details></div>' +
+        '  </div>' +
+        '</div>' +
         '<div id="error-bar" class="error-bar" style="display:none"></div>';
-      shadow.appendChild(container);
+      s.appendChild(c);
 
       this._setupEditor();
       this._setupEntityPicker();
-      this._attachEventListeners();
+      this._attachEvents();
     }
 
-    // ---- Setup Code Editor ----
+    // ---- Editor ----
     _setupEditor() {
-      var wrapper = this.shadowRoot.getElementById("editor-wrapper");
-      var self = this;
-
-      // Try ha-code-editor first (HA's built-in CodeMirror wrapper)
-      if (customElements.get("ha-code-editor")) {
-        var haCE = document.createElement("ha-code-editor");
-        haCE.mode = "yaml";
-        haCE.autofocus = true;
-        haCE.autocompleteEntities = false;
-        haCE.addEventListener("value-changed", function (e) {
-          self._onYamlChange(e.detail.value);
-        });
-        wrapper.appendChild(haCE);
-        this._editor = {
-          element: haCE,
-          getValue: function () {
-            return haCE.value;
-          },
-          setValue: function (v) {
-            haCE.value = v;
-          },
-        };
+      var w = this.shadowRoot.getElementById('editor-wrapper'), self = this;
+      if (customElements.get('ha-code-editor')) {
+        var ed = document.createElement('ha-code-editor');
+        ed.mode = 'yaml'; ed.autofocus = true; ed.autocompleteEntities = false;
+        ed.addEventListener('value-changed', function (e) { self._onEditorChange(e.detail.value); });
+        w.appendChild(ed);
+        this._editor = { el: ed, get: function () { return ed.value; }, set: function (v) { ed.value = v; } };
       } else {
-        // Fallback: styled textarea
-        var ta = document.createElement("textarea");
-        ta.className = "yaml-textarea";
-        ta.spellcheck = false;
-        ta.placeholder = "Paste your button_card_templates YAML here...";
-        ta.addEventListener("keydown", function (e) {
-          if (e.key === "Tab") {
-            e.preventDefault();
-            var start = ta.selectionStart;
-            var end = ta.selectionEnd;
-            ta.value =
-              ta.value.substring(0, start) + "  " + ta.value.substring(end);
-            ta.selectionStart = ta.selectionEnd = start + 2;
-            self._onYamlChange(ta.value);
-          }
+        var ta = document.createElement('textarea');
+        ta.className = 'yaml-textarea'; ta.spellcheck = false;
+        ta.addEventListener('keydown', function (e) {
+          if (e.key === 'Tab') { e.preventDefault(); var s = ta.selectionStart, end = ta.selectionEnd; ta.value = ta.value.substring(0, s) + '  ' + ta.value.substring(end); ta.selectionStart = ta.selectionEnd = s + 2; self._onEditorChange(ta.value); }
         });
-        ta.addEventListener("input", function () {
-          self._onYamlChange(ta.value);
-        });
-        wrapper.appendChild(ta);
-        this._editor = {
-          element: ta,
-          getValue: function () {
-            return ta.value;
-          },
-          setValue: function (v) {
-            ta.value = v;
-          },
-        };
+        ta.addEventListener('input', function () { self._onEditorChange(ta.value); });
+        w.appendChild(ta);
+        this._editor = { el: ta, get: function () { return ta.value; }, set: function (v) { ta.value = v; } };
       }
     }
 
-    // ---- Setup Entity Picker ----
     _setupEntityPicker() {
-      var wrapper = this.shadowRoot.getElementById("entity-picker-wrapper");
-      var self = this;
-
-      if (customElements.get("ha-entity-picker")) {
-        var picker = document.createElement("ha-entity-picker");
-        picker.hass = this._hass;
-        picker.allowCustomEntity = true;
-        picker.addEventListener("value-changed", function (e) {
-          self._selectedEntity = e.detail.value || "";
-          self._scheduleUpdate();
-        });
-        wrapper.appendChild(picker);
+      var w = this.shadowRoot.getElementById('entity-picker-wrapper'), self = this;
+      if (customElements.get('ha-entity-picker')) {
+        var p = document.createElement('ha-entity-picker');
+        p.hass = this._hass; p.allowCustomEntity = true;
+        p.addEventListener('value-changed', function (e) { self._selectedEntity = e.detail.value || ''; self._updatePreview(); });
+        w.appendChild(p);
       } else {
-        // Fallback: text input
-        var input = document.createElement("input");
-        input.type = "text";
-        input.className = "entity-input";
-        input.placeholder = "light.living_room";
-        input.addEventListener("input", function () {
-          self._selectedEntity = input.value;
-          self._scheduleUpdate();
-        });
-        wrapper.appendChild(input);
+        var inp = document.createElement('input'); inp.type = 'text'; inp.className = 'entity-input'; inp.placeholder = 'light.living_room';
+        inp.addEventListener('input', function () { self._selectedEntity = inp.value; self._updatePreview(); });
+        w.appendChild(inp);
       }
     }
 
-    // ---- Attach Event Listeners ----
-    _attachEventListeners() {
+    // ---- Events ----
+    _attachEvents() {
       var self = this;
-
-      this.shadowRoot
-        .getElementById("template-select")
-        .addEventListener("change", function (e) {
-          self._selectedTemplate = e.target.value;
-          self._variableOverrides = {};
-          self._updateVariablesEditor();
-          self._scheduleUpdate();
-        });
-
-      this.shadowRoot
-        .getElementById("state-buttons")
-        .addEventListener("click", function (e) {
-          if (!e.target.classList.contains("state-btn")) return;
-          self.shadowRoot
-            .querySelectorAll(".state-btn")
-            .forEach(function (btn) {
-              btn.classList.remove("active");
-            });
-          e.target.classList.add("active");
-          self._stateOverride = e.target.getAttribute("data-state");
-          self.shadowRoot.getElementById("custom-state").value = "";
-          self._scheduleUpdate();
-        });
-
-      this.shadowRoot
-        .getElementById("custom-state")
-        .addEventListener("input", function (e) {
-          if (e.target.value) {
-            self.shadowRoot
-              .querySelectorAll(".state-btn")
-              .forEach(function (btn) {
-                btn.classList.remove("active");
-              });
-            self._stateOverride = e.target.value;
-            self._scheduleUpdate();
-          }
-        });
-
-      this.shadowRoot
-        .getElementById("btn-import")
-        .addEventListener("click", function () {
-          self._showImportModal();
-        });
-
-      this.shadowRoot
-        .getElementById("btn-save")
-        .addEventListener("click", function () {
-          self._showSaveModal();
-        });
-
-      this.shadowRoot
-        .getElementById("btn-export")
-        .addEventListener("click", function () {
-          self._exportYaml();
-        });
-
-      this.shadowRoot
-        .getElementById("btn-copy")
-        .addEventListener("click", function () {
-          self._copyToClipboard();
-        });
-    }
-
-    // ---- Editor helpers ----
-    _setEditorValue(value) {
-      if (this._editor) this._editor.setValue(value);
-    }
-
-    _getEditorValue() {
-      return this._editor ? this._editor.getValue() : "";
-    }
-
-    // ---- YAML Changed (triggers debounced update) ----
-    _onYamlChange(yaml) {
-      this._scheduleUpdate();
-    }
-
-    _scheduleUpdate() {
-      var self = this;
-      if (this._debounceTimer) clearTimeout(this._debounceTimer);
-      this._debounceTimer = setTimeout(function () {
-        self._parseAndUpdate();
-      }, 400);
-    }
-
-    // ---- Parse YAML and Update Everything ----
-    _parseAndUpdate() {
-      if (!this._jsyaml || !this._initialized) return;
-
-      var yaml = this._getEditorValue();
-      this._hideError();
-
-      try {
-        var parsed = this._jsyaml.load(yaml);
-        if (!parsed) {
-          this._templates = {};
-          this._updateTemplateSelector();
-          this._updatePreview();
-          return;
-        }
-
-        // Support both { button_card_templates: {...} } and flat { name: {...} }
-        var templates = parsed.button_card_templates || parsed;
-
-        if (typeof templates !== "object" || Array.isArray(templates)) {
-          throw new Error(
-            "Expected an object with template definitions. Use the format:\nbutton_card_templates:\n  template_name:\n    ..."
-          );
-        }
-
-        this._templates = templates;
-        this._updateTemplateSelector();
-        this._updatePreview();
-      } catch (e) {
-        this._showError(e.message);
-      }
-    }
-
-    // ---- Update Template Selector Dropdown ----
-    _updateTemplateSelector() {
-      var select = this.shadowRoot.getElementById("template-select");
-      var current = this._selectedTemplate;
-      var names = Object.keys(this._templates);
-
-      select.innerHTML =
-        '<option value="">-- Select Template (' + names.length + ") --</option>";
-      names.forEach(function (name) {
-        var opt = document.createElement("option");
-        opt.value = name;
-        opt.textContent = name;
-        if (name === current) opt.selected = true;
-        select.appendChild(opt);
+      this.shadowRoot.getElementById('sel-dash').addEventListener('change', function (e) { self._onDashboardChange(e.target.value); });
+      this.shadowRoot.getElementById('sel-tpl').addEventListener('change', function (e) { self._onTemplateChange(e.target.value); });
+      this.shadowRoot.getElementById('btn-new').addEventListener('click', function () { self._createTemplate(); });
+      this.shadowRoot.getElementById('btn-del').addEventListener('click', function () { self._deleteTemplate(); });
+      this.shadowRoot.getElementById('btn-save').addEventListener('click', function () { self._save(); });
+      this.shadowRoot.getElementById('btn-copy').addEventListener('click', function () { self._copy(); });
+      this.shadowRoot.getElementById('btn-add-attr').addEventListener('click', function () { self._addAttributeRow('', ''); });
+      this.shadowRoot.getElementById('btn-add-entity').addEventListener('click', function () { self._addExtraEntity(); });
+      this.shadowRoot.getElementById('state-buttons').addEventListener('click', function (e) {
+        if (!e.target.classList.contains('state-btn')) return;
+        self.shadowRoot.querySelectorAll('.state-btn').forEach(function (b) { b.classList.remove('active'); });
+        e.target.classList.add('active');
+        self._stateOverride = e.target.getAttribute('data-state');
+        self.shadowRoot.getElementById('custom-state').value = '';
+        self._updatePreview();
       });
-
-      if (!current || names.indexOf(current) === -1) {
-        if (names.length > 0) {
-          this._selectedTemplate = names[0];
-          select.value = names[0];
-        } else {
-          this._selectedTemplate = "";
+      this.shadowRoot.getElementById('custom-state').addEventListener('input', function (e) {
+        if (e.target.value) {
+          self.shadowRoot.querySelectorAll('.state-btn').forEach(function (b) { b.classList.remove('active'); });
+          self._stateOverride = e.target.value; self._updatePreview();
         }
-      }
+      });
+    }
 
+    // ---- Load Dashboards ----
+    _loadDashboards() {
+      var self = this;
+      this._dashboardsLoaded = true;
+      var sel = this.shadowRoot.getElementById('sel-dash');
+      sel.innerHTML = '<option value="">Default (lovelace)</option>';
+      if (!this._hass) return;
+      this._hass.callWS({ type: 'lovelace/dashboards/list' }).then(function (list) {
+        list.forEach(function (d) {
+          var o = document.createElement('option');
+          o.value = d.url_path; o.textContent = d.title || d.url_path;
+          sel.appendChild(o);
+        });
+        // Auto-load default dashboard
+        self._onDashboardChange('');
+      }).catch(function () { self._onDashboardChange(''); });
+    }
+
+    // ---- Dashboard Changed ----
+    _onDashboardChange(urlPath) {
+      var self = this;
+      this._selectedDashboard = urlPath || null;
+      var params = { type: 'lovelace/config' };
+      if (this._selectedDashboard) params.url_path = this._selectedDashboard;
+
+      this._hass.callWS(params).then(function (config) {
+        self._allTemplates = config.button_card_templates ? deepClone(config.button_card_templates) : {};
+        self._populateTemplateDropdown();
+        self._hideError();
+      }).catch(function (err) {
+        self._allTemplates = {};
+        self._populateTemplateDropdown();
+        self._showError('Failed to load: ' + err.message);
+      });
+    }
+
+    // ---- Populate Template Dropdown ----
+    _populateTemplateDropdown() {
+      var sel = this.shadowRoot.getElementById('sel-tpl');
+      var names = Object.keys(this._allTemplates);
+      var current = this._selectedTemplate;
+      sel.innerHTML = '';
+      if (names.length === 0) {
+        sel.innerHTML = '<option value="">-- No templates --</option>';
+        this._selectedTemplate = '';
+        this._loadTemplateIntoEditor('');
+        return;
+      }
+      names.forEach(function (n) {
+        var o = document.createElement('option');
+        o.value = n; o.textContent = n;
+        if (n === current) o.selected = true;
+        sel.appendChild(o);
+      });
+      // Keep current if still exists, otherwise first
+      if (!current || names.indexOf(current) === -1) {
+        this._selectedTemplate = names[0];
+        sel.value = names[0];
+      }
+      this._loadTemplateIntoEditor(this._selectedTemplate);
+    }
+
+    // ---- Template Changed ----
+    _onTemplateChange(name) {
+      this._commitCurrentEdits(); // save current work
+      this._selectedTemplate = name;
+      this._variableOverrides = {};
+      this._loadTemplateIntoEditor(name);
+    }
+
+    // ---- Load single template YAML into editor ----
+    _loadTemplateIntoEditor(name) {
+      var title = this.shadowRoot.getElementById('editor-title');
+      if (!name || !this._allTemplates[name]) {
+        title.textContent = 'Template';
+        this._skipNextCommit = true;
+        this._editor.set('# Select or create a template');
+        this._updatePreview();
+        this._updateVariablesEditor();
+        return;
+      }
+      title.textContent = 'Template: ' + name;
+      var yaml = this._jsyaml.dump(this._allTemplates[name], { indent: 2, lineWidth: -1, noRefs: true });
+      this._skipNextCommit = true;
+      this._editor.set(yaml);
+      this._updatePreview();
       this._updateVariablesEditor();
     }
 
-    // ---- Update Variables Editor ----
-    _updateVariablesEditor() {
-      var section = this.shadowRoot.getElementById("variables-section");
-      var editor = this.shadowRoot.getElementById("variables-editor");
-      var self = this;
-
-      if (!this._selectedTemplate || !this._templates[this._selectedTemplate]) {
-        section.style.display = "none";
-        return;
-      }
-
-      var resolved;
+    // ---- Commit editor content back to _allTemplates ----
+    _commitCurrentEdits() {
+      if (!this._selectedTemplate || !this._jsyaml) return;
       try {
-        resolved = resolveTemplate(this._selectedTemplate, this._templates);
-      } catch (e) {
-        section.style.display = "none";
-        return;
-      }
+        var parsed = this._jsyaml.load(this._editor.get());
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          this._allTemplates[this._selectedTemplate] = parsed;
+        }
+      } catch (e) { /* ignore parse errors during commit */ }
+    }
 
-      var vars = resolved.variables;
-      if (!vars || Object.keys(vars).length === 0) {
-        section.style.display = "none";
-        return;
-      }
+    // ---- Editor content changed (debounced) ----
+    _onEditorChange(val) {
+      if (this._skipNextCommit) { this._skipNextCommit = false; return; }
+      var self = this;
+      if (this._debounceTimer) clearTimeout(this._debounceTimer);
+      this._debounceTimer = setTimeout(function () {
+        self._commitCurrentEdits();
+        self._hideError();
+        self._updatePreview();
+        self._updateVariablesEditor();
+      }, 400);
+    }
 
-      section.style.display = "block";
-      editor.innerHTML = "";
+    // ---- Create new template ----
+    _createTemplate() {
+      var self = this;
+      var overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+      var modal = document.createElement('div'); modal.className = 'modal';
+      modal.innerHTML =
+        '<h3>New Template</h3>' +
+        '<input type="text" id="new-tpl-name" placeholder="template_name" autofocus>' +
+        '<div class="modal-buttons"><button class="tb" id="new-cancel">Cancel</button><button class="tb primary" id="new-ok">Create</button></div>';
+      overlay.appendChild(modal);
+      this.shadowRoot.appendChild(overlay);
 
-      Object.keys(vars).forEach(function (key) {
-        var originalValue = vars[key];
-        var displayValue =
-          typeof originalValue === "object"
-            ? JSON.stringify(originalValue)
-            : String(originalValue || "");
+      overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+      modal.querySelector('#new-cancel').addEventListener('click', function () { overlay.remove(); });
+      var doCreate = function () {
+        var name = modal.querySelector('#new-tpl-name').value.trim().replace(/\s+/g, '_');
+        overlay.remove();
+        if (!name) return;
+        if (self._allTemplates[name]) { self._showError("Template '" + name + "' already exists"); return; }
+        self._commitCurrentEdits();
+        self._allTemplates[name] = { show_name: true, show_icon: true };
+        self._selectedTemplate = name;
+        self._populateTemplateDropdown();
+      };
+      modal.querySelector('#new-ok').addEventListener('click', doCreate);
+      modal.querySelector('#new-tpl-name').addEventListener('keydown', function (e) { if (e.key === 'Enter') doCreate(); });
+    }
 
-        var row = document.createElement("div");
-        row.className = "var-row";
+    // ---- Delete current template ----
+    _deleteTemplate() {
+      if (!this._selectedTemplate) return;
+      if (!confirm('Delete template "' + this._selectedTemplate + '"?')) return;
+      delete this._allTemplates[this._selectedTemplate];
+      this._selectedTemplate = '';
+      this._populateTemplateDropdown();
+    }
 
-        var keyEl = document.createElement("span");
-        keyEl.className = "var-key";
-        keyEl.textContent = key;
+    // ---- Save to dashboard ----
+    _save() {
+      var self = this;
+      if (!this._hass) { this._showError('No HA connection'); return; }
+      this._commitCurrentEdits();
 
-        var valEl = document.createElement("input");
-        valEl.className = "var-value";
-        valEl.value =
-          self._variableOverrides[key] !== undefined
-            ? self._variableOverrides[key]
-            : displayValue;
-        valEl.placeholder = displayValue;
-        valEl.addEventListener("input", function () {
-          if (valEl.value === "" || valEl.value === displayValue) {
-            delete self._variableOverrides[key];
-          } else {
-            self._variableOverrides[key] = valEl.value;
-          }
-          self._scheduleUpdate();
-        });
+      var readParams = { type: 'lovelace/config' };
+      if (this._selectedDashboard) readParams.url_path = this._selectedDashboard;
 
-        row.appendChild(keyEl);
-        row.appendChild(valEl);
-        editor.appendChild(row);
+      this._hass.callWS(readParams).then(function (config) {
+        var updated = Object.assign({}, config, { button_card_templates: self._allTemplates });
+        var saveParams = { type: 'lovelace/config/save', config: updated };
+        if (self._selectedDashboard) saveParams.url_path = self._selectedDashboard;
+        return self._hass.callWS(saveParams);
+      }).then(function () {
+        var btn = self.shadowRoot.getElementById('btn-save');
+        btn.textContent = 'Saved!'; btn.style.background = 'var(--success-color,#43a047)';
+        setTimeout(function () { btn.textContent = 'Save'; btn.style.background = ''; }, 2000);
+        self._hideError();
+      }).catch(function (err) {
+        self._showError('Save failed: ' + err.message);
       });
     }
 
-    // ---- Build Preview Hass Object ----
+    // ---- Copy to clipboard ----
+    _copy() {
+      var self = this, yaml = this._editor.get();
+      if (!yaml) return;
+      navigator.clipboard.writeText(yaml).then(function () {
+        var btn = self.shadowRoot.getElementById('btn-copy');
+        btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      }).catch(function () {});
+    }
+
+    // ---- Variables Editor ----
+    _updateVariablesEditor() {
+      var section = this.shadowRoot.getElementById('variables-section');
+      var editor = this.shadowRoot.getElementById('variables-editor');
+      var self = this;
+      if (!this._selectedTemplate || !this._allTemplates[this._selectedTemplate]) { section.style.display = 'none'; return; }
+      var resolved;
+      try { resolved = resolveTemplate(this._selectedTemplate, this._allTemplates); } catch (e) { section.style.display = 'none'; return; }
+      var vars = resolved.variables;
+      if (!vars || Object.keys(vars).length === 0) { section.style.display = 'none'; return; }
+
+      section.style.display = 'block';
+      editor.innerHTML = '';
+      Object.keys(vars).forEach(function (key) {
+        var orig = vars[key];
+        var disp = typeof orig === 'object' ? JSON.stringify(orig) : String(orig || '');
+        var row = document.createElement('div'); row.className = 'var-row';
+        var k = document.createElement('span'); k.className = 'var-key'; k.textContent = key;
+        var v = document.createElement('input'); v.className = 'var-value';
+        v.value = self._variableOverrides[key] !== undefined ? self._variableOverrides[key] : disp;
+        v.placeholder = disp;
+        v.addEventListener('input', function () {
+          if (v.value === '' || v.value === disp) delete self._variableOverrides[key]; else self._variableOverrides[key] = v.value;
+          self._updatePreview();
+        });
+        row.appendChild(k); row.appendChild(v); editor.appendChild(row);
+      });
+    }
+
+    // ---- Attribute Editor ----
+    _addAttributeRow(key, val) {
+      var self = this;
+      var container = this.shadowRoot.getElementById('attr-editor');
+      var row = document.createElement('div'); row.className = 'attr-row';
+      var kInp = document.createElement('input'); kInp.placeholder = 'key (e.g. brightness)'; kInp.value = key;
+      var vInp = document.createElement('input'); vInp.placeholder = 'value (e.g. 255)'; vInp.value = val;
+      var rm = document.createElement('button'); rm.className = 'rm'; rm.textContent = '\u00d7';
+      rm.addEventListener('click', function () { row.remove(); self._syncAttributes(); self._updatePreview(); });
+      kInp.addEventListener('input', function () { self._syncAttributes(); self._updatePreview(); });
+      vInp.addEventListener('input', function () { self._syncAttributes(); self._updatePreview(); });
+      row.appendChild(kInp); row.appendChild(vInp); row.appendChild(rm);
+      container.appendChild(row);
+    }
+
+    _syncAttributes() {
+      var attrs = {};
+      this.shadowRoot.querySelectorAll('#attr-editor .attr-row').forEach(function (row) {
+        var inputs = row.querySelectorAll('input');
+        var k = inputs[0].value.trim(), v = inputs[1].value.trim();
+        if (k) {
+          // Try to parse as JSON (for arrays, numbers, booleans)
+          try { attrs[k] = JSON.parse(v); } catch (e) { attrs[k] = v; }
+        }
+      });
+      this._attributeOverrides = attrs;
+    }
+
+    // ---- Extra Entities (for states[...] mocks) ----
+    _addExtraEntity(entityId, state, attrs) {
+      var self = this;
+      var container = this.shadowRoot.getElementById('extra-entities');
+      var wrapper = document.createElement('div'); wrapper.className = 'extra-entity';
+
+      var header = document.createElement('div'); header.className = 'extra-entity-header';
+      var eidInp = document.createElement('input'); eidInp.placeholder = 'entity_id (e.g. sensor.temp)'; eidInp.value = entityId || ''; eidInp.style.flex = '2';
+      var stInp = document.createElement('input'); stInp.placeholder = 'state'; stInp.value = state || 'on';
+      var rm = document.createElement('button'); rm.className = 'rm'; rm.textContent = '\u00d7';
+      rm.addEventListener('click', function () { wrapper.remove(); self._syncExtraEntities(); self._updatePreview(); });
+
+      header.appendChild(eidInp); header.appendChild(stInp); header.appendChild(rm);
+      wrapper.appendChild(header);
+
+      // Attributes for this extra entity
+      var attrContainer = document.createElement('div'); attrContainer.className = 'extra-attrs';
+      wrapper.appendChild(attrContainer);
+
+      var addAttrBtn = document.createElement('button'); addAttrBtn.className = 'add-btn';
+      addAttrBtn.textContent = '+ attribute'; addAttrBtn.style.fontSize = '10px'; addAttrBtn.style.padding = '2px 6px';
+      addAttrBtn.addEventListener('click', function () {
+        self._addExtraEntityAttrRow(attrContainer, '', '');
+      });
+      wrapper.appendChild(addAttrBtn);
+
+      container.appendChild(wrapper);
+
+      // Pre-populate attributes if provided
+      if (attrs && typeof attrs === 'object') {
+        Object.keys(attrs).forEach(function (k) {
+          self._addExtraEntityAttrRow(attrContainer, k, typeof attrs[k] === 'object' ? JSON.stringify(attrs[k]) : String(attrs[k]));
+        });
+      }
+
+      eidInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
+      stInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
+    }
+
+    _addExtraEntityAttrRow(container, key, val) {
+      var self = this;
+      var row = document.createElement('div'); row.className = 'attr-row';
+      var kInp = document.createElement('input'); kInp.placeholder = 'attr key'; kInp.value = key; kInp.style.flex = '1';
+      var vInp = document.createElement('input'); vInp.placeholder = 'value'; vInp.value = val; vInp.style.flex = '1';
+      var rm = document.createElement('button'); rm.className = 'rm'; rm.textContent = '\u00d7';
+      rm.addEventListener('click', function () { row.remove(); self._syncExtraEntities(); self._updatePreview(); });
+      kInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
+      vInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
+      row.appendChild(kInp); row.appendChild(vInp); row.appendChild(rm);
+      container.appendChild(row);
+    }
+
+    _syncExtraEntities() {
+      var entities = [];
+      this.shadowRoot.querySelectorAll('#extra-entities .extra-entity').forEach(function (wrapper) {
+        var headerInputs = wrapper.querySelectorAll('.extra-entity-header input');
+        var eid = headerInputs[0].value.trim();
+        var st = headerInputs[1].value.trim() || 'on';
+        if (!eid) return;
+        var attrs = {};
+        wrapper.querySelectorAll('.extra-attrs .attr-row').forEach(function (row) {
+          var inputs = row.querySelectorAll('input');
+          var k = inputs[0].value.trim(), v = inputs[1].value.trim();
+          if (k) { try { attrs[k] = JSON.parse(v); } catch (e) { attrs[k] = v; } }
+        });
+        entities.push({ entity_id: eid, state: st, attributes: attrs });
+      });
+      this._extraEntities = entities;
+    }
+
+    // ---- Build mock hass ----
     _buildPreviewHass() {
       if (!this._hass) return null;
+      var eid = this._selectedEntity || 'light.mock_entity';
+      var real = this._hass.states[eid];
+      var now = new Date().toISOString();
+      var ctx = { id: 'mock', parent_id: null, user_id: null };
 
-      var entityId = this._selectedEntity || "light.mock_entity";
-      var stateOverride = this._stateOverride;
-      var realState = this._hass.states[entityId];
-
-      var mockState = {
-        entity_id: entityId,
-        state: stateOverride || (realState ? realState.state : "on"),
-        attributes: Object.assign(
-          {
-            friendly_name: entityId.split(".").pop().replace(/_/g, " "),
-            icon: "mdi:lightbulb",
-          },
-          realState ? realState.attributes : {}
-        ),
-        last_changed: new Date().toISOString(),
-        last_updated: new Date().toISOString(),
-        context: { id: "mock", parent_id: null, user_id: null },
+      // Main entity: merge real attributes + overrides
+      var baseAttrs = Object.assign(
+        { friendly_name: eid.split('.').pop().replace(/_/g, ' '), icon: 'mdi:lightbulb' },
+        real ? real.attributes : {},
+        this._attributeOverrides
+      );
+      var mainMock = {
+        entity_id: eid,
+        state: this._stateOverride || (real ? real.state : 'on'),
+        attributes: baseAttrs,
+        last_changed: now, last_updated: now, context: ctx
       };
 
       var states = Object.assign({}, this._hass.states);
-      states[entityId] = mockState;
+      states[eid] = mainMock;
+
+      // Extra entities: add/override in states
+      this._extraEntities.forEach(function (ex) {
+        if (!ex.entity_id) return;
+        var existing = states[ex.entity_id];
+        states[ex.entity_id] = {
+          entity_id: ex.entity_id,
+          state: ex.state,
+          attributes: Object.assign(
+            { friendly_name: ex.entity_id.split('.').pop().replace(/_/g, ' ') },
+            existing ? existing.attributes : {},
+            ex.attributes
+          ),
+          last_changed: now, last_updated: now, context: ctx
+        };
+      });
 
       return Object.assign({}, this._hass, { states: states });
     }
 
     // ---- Update Preview ----
     _updatePreview() {
-      var container = this.shadowRoot.getElementById("preview-container");
-      var resolvedEl = this.shadowRoot.getElementById("resolved-config");
-
-      if (!this._selectedTemplate || !this._templates[this._selectedTemplate]) {
-        container.innerHTML =
-          '<div class="preview-placeholder">Select a template to preview</div>';
-        resolvedEl.textContent = "Select a template";
-        return;
+      var container = this.shadowRoot.getElementById('preview-container');
+      var resolvedEl = this.shadowRoot.getElementById('resolved-config');
+      if (!this._selectedTemplate || !this._allTemplates[this._selectedTemplate]) {
+        container.innerHTML = '<div class="preview-placeholder">Select a template to preview</div>';
+        resolvedEl.textContent = ''; return;
       }
-
-      // Resolve the template
       var resolved;
-      try {
-        resolved = resolveTemplate(this._selectedTemplate, this._templates);
-      } catch (e) {
-        container.innerHTML =
-          '<div class="preview-placeholder" style="color:var(--bct-error)">' +
-          e.message +
-          "</div>";
-        resolvedEl.textContent = "Error: " + e.message;
-        return;
+      try { resolved = resolveTemplate(this._selectedTemplate, this._allTemplates); } catch (e) {
+        container.innerHTML = '<div class="preview-placeholder" style="color:var(--bct-error)">' + e.message + '</div>';
+        resolvedEl.textContent = 'Error: ' + e.message; return;
       }
-
-      // Apply variable overrides
       if (resolved.variables && Object.keys(this._variableOverrides).length > 0) {
-        resolved.variables = Object.assign(
-          {},
-          resolved.variables,
-          this._variableOverrides
-        );
+        resolved.variables = Object.assign({}, resolved.variables, this._variableOverrides);
       }
+      resolved.entity = this._selectedEntity || 'light.mock_entity';
+      if (!resolved.type) resolved.type = 'custom:button-card';
 
-      // Set entity
-      var entityId = this._selectedEntity || "light.mock_entity";
-      resolved.entity = entityId;
+      try { resolvedEl.textContent = this._jsyaml.dump(resolved, { indent: 2, lineWidth: -1, noRefs: true }); }
+      catch (e) { resolvedEl.textContent = JSON.stringify(resolved, null, 2); }
 
-      // Ensure type is set for button-card
-      if (!resolved.type) {
-        resolved.type = "custom:button-card";
-      }
-
-      // Show resolved config as YAML
-      try {
-        resolvedEl.textContent = this._jsyaml.dump(resolved, {
-          indent: 2,
-          lineWidth: -1,
-          noRefs: true,
-        });
-      } catch (e) {
-        resolvedEl.textContent = JSON.stringify(resolved, null, 2);
-      }
-
-      // Check if button-card custom element is available
-      if (!customElements.get("button-card")) {
-        container.innerHTML =
-          '<div class="preview-warning">' +
-          "button-card is not loaded yet. Visit a dashboard with button-cards first, then return here." +
-          "</div>" +
-          '<div class="preview-placeholder">Resolved config is shown below.</div>';
+      if (!customElements.get('button-card')) {
+        container.innerHTML = '<div class="preview-warning">button-card not loaded. Visit a dashboard with button-cards first.</div>';
         return;
       }
-
-      // Create or reuse the button-card element for preview
       try {
-        if (!this._cardEl) {
-          this._cardEl = document.createElement("button-card");
-          this._cardEl.preview = true;
-        }
-
+        if (!this._cardEl) { this._cardEl = document.createElement('button-card'); this._cardEl.preview = true; }
         this._cardEl.setConfig(resolved);
-
-        var previewHass = this._buildPreviewHass();
-        if (previewHass) {
-          this._cardEl.hass = previewHass;
-        }
-
-        container.innerHTML = "";
-        container.appendChild(this._cardEl);
+        var ph = this._buildPreviewHass();
+        if (ph) this._cardEl.hass = ph;
+        container.innerHTML = ''; container.appendChild(this._cardEl);
         this._hideError();
       } catch (e) {
-        container.innerHTML =
-          '<div class="preview-placeholder" style="color:var(--bct-error)">' +
-          "Preview error: " +
-          e.message +
-          "</div>";
+        container.innerHTML = '<div class="preview-placeholder" style="color:var(--bct-error)">Preview error: ' + e.message + '</div>';
         this._cardEl = null;
       }
     }
 
-    // ---- Error display ----
-    _showError(msg) {
-      var bar = this.shadowRoot.getElementById("error-bar");
-      if (bar) {
-        bar.textContent = msg;
-        bar.style.display = "block";
-      }
-    }
-
-    _hideError() {
-      var bar = this.shadowRoot.getElementById("error-bar");
-      if (bar) bar.style.display = "none";
-    }
-
-    // ---- Import from Dashboard ----
-    _showImportModal() {
-      var self = this;
-      if (!this._hass) {
-        this._showError("Home Assistant connection not available");
-        return;
-      }
-
-      this._hass
-        .callWS({ type: "lovelace/dashboards/list" })
-        .then(function (dashboards) {
-          var overlay = document.createElement("div");
-          overlay.className = "modal-overlay";
-
-          var modal = document.createElement("div");
-          modal.className = "modal";
-
-          var options = '<option value="lovelace">Default (lovelace)</option>';
-          dashboards.forEach(function (d) {
-            options +=
-              '<option value="' +
-              d.url_path +
-              '">' +
-              (d.title || d.url_path) +
-              "</option>";
-          });
-
-          modal.innerHTML =
-            "<h3>Import Templates from Dashboard</h3>" +
-            '<select class="modal-select" id="modal-dashboard-select">' +
-            options +
-            "</select>" +
-            '<div class="modal-buttons">' +
-            '  <button class="toolbar-btn" id="modal-cancel">Cancel</button>' +
-            '  <button class="toolbar-btn primary" id="modal-import">Import</button>' +
-            "</div>";
-
-          overlay.appendChild(modal);
-          self.shadowRoot.appendChild(overlay);
-
-          overlay.addEventListener("click", function (e) {
-            if (e.target === overlay) overlay.remove();
-          });
-
-          modal
-            .querySelector("#modal-cancel")
-            .addEventListener("click", function () {
-              overlay.remove();
-            });
-
-          modal
-            .querySelector("#modal-import")
-            .addEventListener("click", function () {
-              var urlPath = modal.querySelector(
-                "#modal-dashboard-select"
-              ).value;
-              overlay.remove();
-              self._importDashboard(
-                urlPath === "lovelace" ? null : urlPath
-              );
-            });
-        })
-        .catch(function () {
-          self._importDashboard(null);
-        });
-    }
-
-    _importDashboard(urlPath) {
-      var self = this;
-      var params = { type: "lovelace/config" };
-      if (urlPath) params.url_path = urlPath;
-
-      this._hass
-        .callWS(params)
-        .then(function (config) {
-          var templates = config.button_card_templates;
-          if (!templates || Object.keys(templates).length === 0) {
-            self._showError(
-              "No button_card_templates found in this dashboard."
-            );
-            return;
-          }
-
-          // Track source dashboard for save-back
-          self._sourceDashboard = urlPath;
-          self._updateSaveButton();
-
-          var yaml =
-            "button_card_templates:\n" +
-            self._jsyaml
-              .dump(templates, {
-                indent: 2,
-                lineWidth: -1,
-                noRefs: true,
-              })
-              .replace(/^/gm, "  ");
-
-          self._setEditorValue(yaml);
-          self._parseAndUpdate();
-          self._hideError();
-        })
-        .catch(function (err) {
-          self._showError("Failed to import: " + err.message);
-        });
-    }
-
-    // ---- Update Save button label to show target ----
-    _updateSaveButton() {
-      var btn = this.shadowRoot.getElementById("btn-save");
-      if (btn) {
-        var target = this._sourceDashboard || "lovelace";
-        btn.textContent = "Save to " + target;
-        btn.title = "Save templates back to dashboard: " + target;
-      }
-    }
-
-    // ---- Save to Dashboard ----
-    _showSaveModal() {
-      var self = this;
-      if (!this._hass) {
-        this._showError("Home Assistant connection not available");
-        return;
-      }
-
-      // Parse current editor content first
-      var yaml = this._getEditorValue();
-      var parsed;
-      try {
-        parsed = this._jsyaml.load(yaml);
-        if (!parsed) throw new Error("Empty YAML");
-      } catch (e) {
-        this._showError("Cannot save: invalid YAML - " + e.message);
-        return;
-      }
-
-      var newTemplates = parsed.button_card_templates || parsed;
-      if (typeof newTemplates !== "object" || Array.isArray(newTemplates)) {
-        this._showError("Cannot save: invalid template format");
-        return;
-      }
-
-      var templateCount = Object.keys(newTemplates).length;
-
-      // Show confirmation with dashboard selector
-      this._hass
-        .callWS({ type: "lovelace/dashboards/list" })
-        .then(function (dashboards) {
-          var overlay = document.createElement("div");
-          overlay.className = "modal-overlay";
-
-          var modal = document.createElement("div");
-          modal.className = "modal";
-
-          var options = '<option value="lovelace"' +
-            (self._sourceDashboard === null ? ' selected' : '') +
-            '>Default (lovelace)</option>';
-          dashboards.forEach(function (d) {
-            var sel = d.url_path === self._sourceDashboard ? " selected" : "";
-            options +=
-              '<option value="' + d.url_path + '"' + sel + '>' +
-              (d.title || d.url_path) +
-              "</option>";
-          });
-
-          modal.innerHTML =
-            "<h3>Save Templates to Dashboard</h3>" +
-            '<p style="font-size:14px;color:var(--bct-text2);margin:0 0 12px">' +
-            "This will replace <strong>all " + templateCount + " button_card_templates</strong> " +
-            "in the selected dashboard.</p>" +
-            '<select class="modal-select" id="modal-save-select">' +
-            options +
-            "</select>" +
-            '<div style="background:var(--warning-color,#ff9800);color:#fff;padding:8px 12px;' +
-            'border-radius:8px;font-size:13px;margin-bottom:16px">' +
-            "Warning: This overwrites the existing templates in the dashboard. " +
-            "Other dashboard config (views, etc.) is preserved.</div>" +
-            '<div class="modal-buttons">' +
-            '  <button class="toolbar-btn" id="modal-save-cancel">Cancel</button>' +
-            '  <button class="toolbar-btn primary" id="modal-save-confirm">Save</button>' +
-            "</div>";
-
-          overlay.appendChild(modal);
-          self.shadowRoot.appendChild(overlay);
-
-          overlay.addEventListener("click", function (e) {
-            if (e.target === overlay) overlay.remove();
-          });
-
-          modal
-            .querySelector("#modal-save-cancel")
-            .addEventListener("click", function () {
-              overlay.remove();
-            });
-
-          modal
-            .querySelector("#modal-save-confirm")
-            .addEventListener("click", function () {
-              var urlPath = modal.querySelector("#modal-save-select").value;
-              overlay.remove();
-              self._saveToDashboard(
-                urlPath === "lovelace" ? null : urlPath,
-                newTemplates
-              );
-            });
-        })
-        .catch(function () {
-          // If dashboard list fails, save to source or default
-          self._saveToDashboard(self._sourceDashboard, newTemplates);
-        });
-    }
-
-    _saveToDashboard(urlPath, newTemplates) {
-      var self = this;
-
-      // First, read current dashboard config
-      var readParams = { type: "lovelace/config" };
-      if (urlPath) readParams.url_path = urlPath;
-
-      this._hass
-        .callWS(readParams)
-        .then(function (currentConfig) {
-          // Replace only button_card_templates, keep everything else
-          var updatedConfig = Object.assign({}, currentConfig, {
-            button_card_templates: newTemplates,
-          });
-
-          // Save back
-          var saveParams = {
-            type: "lovelace/config/save",
-            config: updatedConfig,
-          };
-          if (urlPath) saveParams.url_path = urlPath;
-
-          return self._hass.callWS(saveParams);
-        })
-        .then(function () {
-          // Track this dashboard as source
-          self._sourceDashboard = urlPath;
-          self._updateSaveButton();
-
-          // Show success feedback
-          var btn = self.shadowRoot.getElementById("btn-save");
-          var original = btn.textContent;
-          btn.textContent = "Saved!";
-          btn.style.background = "var(--success-color, #43a047)";
-          setTimeout(function () {
-            btn.textContent = original;
-            btn.style.background = "";
-          }, 2000);
-
-          self._hideError();
-        })
-        .catch(function (err) {
-          self._showError("Failed to save: " + err.message);
-        });
-    }
-
-    // ---- Export YAML ----
-    _exportYaml() {
-      var yaml = this._getEditorValue();
-      if (!yaml) return;
-
-      var blob = new Blob([yaml], { type: "text/yaml" });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      a.href = url;
-      a.download = "button_card_templates.yaml";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // ---- Copy to Clipboard ----
-    _copyToClipboard() {
-      var self = this;
-      var yaml = this._getEditorValue();
-      if (!yaml) return;
-
-      navigator.clipboard
-        .writeText(yaml)
-        .then(function () {
-          var btn = self.shadowRoot.getElementById("btn-copy");
-          var original = btn.textContent;
-          btn.textContent = "Copied!";
-          setTimeout(function () {
-            btn.textContent = original;
-          }, 1500);
-        })
-        .catch(function () {
-          // Fallback for insecure contexts
-          var ta = document.createElement("textarea");
-          ta.value = yaml;
-          ta.style.position = "fixed";
-          ta.style.left = "-9999px";
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          document.body.removeChild(ta);
-        });
-    }
+    _showError(msg) { var b = this.shadowRoot.getElementById('error-bar'); if (b) { b.textContent = msg; b.style.display = 'block'; } }
+    _hideError() { var b = this.shadowRoot.getElementById('error-bar'); if (b) b.style.display = 'none'; }
   }
 
-  // Register the custom element
-  customElements.define(
-    "button-card-templater-panel",
-    ButtonCardTemplaterPanel
-  );
+  customElements.define('button-card-templater-panel', ButtonCardTemplaterPanel);
 })();

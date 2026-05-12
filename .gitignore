@@ -1,0 +1,4 @@
+example.yml
+docs/
+__pycache__/
+*.pyc
