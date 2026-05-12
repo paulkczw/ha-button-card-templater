@@ -28,16 +28,18 @@ If you use [custom:button-card](https://github.com/custom-cards/button-card), yo
 
 | Feature | Description |
 |---------|-------------|
-| **YAML Editor** | Full code editor (`ha-code-editor` with syntax highlighting) for your `button_card_templates` block |
-| **Template Selector** | Dropdown to pick any template from your YAML |
+| **Dashboard Selector** | Pick any dashboard -- templates are loaded automatically |
+| **Template Selector** | Dropdown with all templates from the selected dashboard |
+| **YAML Editor** | Edit a single template at a time with syntax highlighting (`ha-code-editor`) |
 | **Live Preview** | Real `button-card` rendering -- exactly how it will look on your dashboard |
-| **Template Inheritance** | Resolves `template: parent` chains using the same merge logic as button-card (`mergeDeep` + `mergeStatesById`) |
-| **State Simulator** | Toggle entity states (on / off / unavailable / custom) and instantly see how your template reacts |
+| **Template Inheritance** | Resolves `template: parent` chains using the same merge logic as button-card |
+| **State Simulator** | Toggle entity states (on / off / unavailable / any custom value) |
 | **Entity Picker** | Pick any real entity from your HA instance, or use a mock entity |
-| **Variables Editor** | Auto-generated input fields for all `variables` defined in the template -- tweak values and see live results |
-| **Import from Dashboard** | Load existing `button_card_templates` from any of your dashboards with one click |
-| **Save to Dashboard** | Write your edited templates directly back into a dashboard (only replaces `button_card_templates`, views stay untouched) |
-| **Export / Copy** | Download as `.yaml` file or copy to clipboard |
+| **Entity Attributes** | Override attributes like `brightness`, `rgb_color`, `current_temperature`, etc. |
+| **Extra Entities** | Mock additional entities for templates that use `states[...]` to access other entities |
+| **Variables Editor** | Auto-generated input fields for all `variables` defined in the template |
+| **Save to Dashboard** | One click -- writes templates directly back into the dashboard |
+| **New / Delete** | Create new templates or delete existing ones |
 | **Resolved Config** | Collapsible view showing the fully resolved config after inheritance + merge |
 | **HA Theme Support** | Automatically follows your Home Assistant light/dark theme |
 
@@ -74,116 +76,67 @@ If you use [custom:button-card](https://github.com/custom-cards/button-card), yo
 
 ---
 
-## How it works
-
-### Architecture
-
-```
-Home Assistant
-  |
-  |-- custom_components/button_card_templater/
-  |     |-- __init__.py         # Registers the sidebar panel
-  |     |-- config_flow.py      # One-click setup via UI
-  |     |-- panel.js            # The entire frontend (runs in HA context)
-  |     |-- manifest.json
-  |     ...
-  |
-  |-- Sidebar: "Card Templater"
-        |
-        |-- [YAML Editor]  <-->  [Live Preview]
-        |-- [Controls: Entity, State, Variables]
-```
-
-The integration registers a **custom panel** in Home Assistant's sidebar. The panel runs directly inside HA's frontend (not an iframe), which means it has full access to:
-
-- **`this.hass`** -- all entity states, services, WebSocket API
-- **HA components** -- `<ha-code-editor>`, `<ha-entity-picker>` are used when available
-- **`<button-card>`** -- the actual button-card custom element is used for rendering, so the preview is 100% accurate
-
-### Template Resolution
-
-Templates are resolved using the **exact same algorithm** as button-card internally:
-
-1. If a template has `template: parent_name`, the parent is resolved first (recursively)
-2. Multiple parents are supported: `template: [base, override]`
-3. **Objects** are deep-merged (nested keys are merged, not replaced)
-4. **Arrays** are concatenated (matching button-card's `mergeDeep` behavior)
-5. **States** with the same `id` are merged via `mergeStatesById`
-6. Circular references are detected and reported
+## How to use
 
 ### Workflow
 
-```
- Import                    Edit                     Save
-+-------------------+    +-------------------+    +-------------------+
-| Pick a dashboard  | -> | Edit YAML         | -> | Save back to      |
-| Templates loaded  |    | Pick template     |    | the same dashboard|
-| into editor       |    | See live preview  |    | (or a different   |
-|                   |    | Test states       |    |  one)             |
-|                   |    | Tweak variables   |    |                   |
-+-------------------+    +-------------------+    +-------------------+
-```
+1. **Select a dashboard** from the dropdown in the toolbar. All `button_card_templates` are loaded automatically.
+2. **Select a template** from the second dropdown. Its YAML is shown in the editor, and the preview updates.
+3. **Edit** the template YAML. Changes are reflected in the preview in real-time.
+4. **Test different states** using the state buttons (on / off / unavailable) or type any custom state value.
+5. **Pick an entity** to preview with real entity data, or leave empty for a mock.
+6. **Save** -- one click writes all templates back to the selected dashboard. Only `button_card_templates` is replaced; views and other config are untouched.
 
-1. **Import**: Click "Import", select a dashboard. All `button_card_templates` are loaded into the editor.
-2. **Edit**: Modify templates in the YAML editor. Select a template from the dropdown to preview it. Use the entity picker and state buttons to test different scenarios.
-3. **Save**: Click "Save to [dashboard]". A confirmation dialog shows how many templates will be written. Only the `button_card_templates` key is replaced -- all views, themes, and other config remain untouched.
+### Mocking entities and attributes
 
----
+Many button-card templates access other entities via `states[...]` or depend on specific entity attributes. The templater lets you mock all of this:
 
-## Example
+**Entity Attributes** -- Override or add attributes for the main entity:
 
-Paste this into the editor to see it in action:
+| Key | Value | Use case |
+|-----|-------|----------|
+| `brightness` | `255` | Light brightness |
+| `rgb_color` | `[255,100,0]` | Light color (use JSON array) |
+| `current_temperature` | `21.5` | Climate sensor |
+| `volume_level` | `0.65` | Media player |
+| `icon` | `mdi:lightbulb` | Custom icon |
+| `members` | `["media_player.kitchen"]` | Group members (JSON array) |
 
-```yaml
-button_card_templates:
-  base:
-    styles:
-      card:
-        - border-radius: 16px
-        - padding: 12px
-        - box-shadow: none
-      name:
-        - font-size: 13px
-      icon:
-        - width: 24px
+Values are automatically parsed as JSON when possible (numbers, arrays, booleans), otherwise treated as strings.
 
-  my_switch:
-    template: base
-    variables:
-      color_on: var(--primary-color)
-      color_off: var(--disabled-color)
-    show_state: true
-    show_name: true
-    tap_action:
-      action: toggle
-    state:
-      - value: "on"
-        icon: mdi:lightbulb
-        styles:
-          card:
-            - background-color: "[[[ return variables.color_on ]]]"
-          icon:
-            - color: white
-      - value: "off"
-        icon: mdi:lightbulb-outline
-        styles:
-          card:
-            - background-color: "[[[ return variables.color_off ]]]"
-```
+**Extra Entities** -- Add mock entities that your template accesses via `states[...]`:
 
-1. Select **my_switch** from the dropdown
-2. Pick a `light.*` entity (or leave empty for mock)
-3. Toggle between **on** and **off** states
-4. Change `color_on` in the Variables section
-5. See the preview update instantly
+For example, if your template does `states['binary_sensor.window_open']?.state`, add an extra entity:
+
+| entity_id | state |
+|-----------|-------|
+| `binary_sensor.window_open` | `on` |
+| `sensor.living_room_temperature` | `22.3` |
+| `input_text.alarm_current_day_tab` | `Mo` |
+
+Each extra entity can also have its own attributes (click `+ attribute`).
+
+If the entity already exists in your HA instance, the mock values override the real ones. If it doesn't exist, a new mock entity is created.
+
+### Template inheritance
+
+Templates are resolved using the **exact same algorithm** as button-card internally:
+
+- `template: parent_name` -- parent is resolved first (recursively)
+- `template: [base, override]` -- multiple parents supported
+- Objects are deep-merged, arrays are concatenated
+- States with the same `id` are merged via `mergeStatesById`
+- Circular references are detected and reported
+
+The **Resolved Config** section (collapsible at the bottom of the preview pane) shows the fully merged result.
 
 ---
 
 ## Notes
 
-- The **live preview requires button-card to be loaded**. If you see a warning instead of a preview, visit any dashboard that contains a button-card first, then return to the templater. (Button-card registers its custom element on first use.)
-- The editor falls back to a styled textarea if `ha-code-editor` is not loaded yet. This works fine but without syntax highlighting.
-- **Save to Dashboard** reads the full dashboard config, replaces only `button_card_templates`, and writes it back. No other config is touched. A confirmation dialog is shown before saving.
+- The **live preview requires button-card to be loaded**. If you see a warning instead of a preview, visit any dashboard that contains a button-card first, then return to the templater.
+- The editor falls back to a styled textarea if `ha-code-editor` is not available. This works fine but without syntax highlighting.
+- **Save** reads the full dashboard config, replaces only `button_card_templates`, and writes it back. No other config is touched.
 
 ---
 
