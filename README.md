@@ -10,6 +10,12 @@ A Home Assistant custom integration that adds a dedicated **editor panel** for [
 
 ---
 
+> **WARNING -- EARLY DEVELOPMENT**
+>
+> This integration is in early development. Bugs and unexpected behavior may occur, especially when saving templates back to a dashboard. **Before using this tool, manually back up your dashboard YAML** (Raw Configuration Editor > Select All > Copy > Save to a text file). This ensures you can always restore your templates if something goes wrong.
+
+---
+
 ## Why?
 
 If you use [custom:button-card](https://github.com/custom-cards/button-card), you probably have a growing collection of templates at the top of your dashboard YAML. The problem:
