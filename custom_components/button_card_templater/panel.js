@@ -192,8 +192,8 @@
 .var-value{flex:1;padding:4px 8px;border:1px solid var(--bct-border);border-radius:6px;background:var(--bct-surface);color:var(--primary-text-color);font-family:monospace;font-size:12px;outline:none}\
 .var-value:focus{border-color:var(--bct-accent)}\
 .preview-section{flex:1;display:flex;flex-direction:column;min-height:200px}\
-.preview-container{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}\
-.preview-container>*{max-width:300px;width:100%}\
+.preview-container{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;font-family:var(--primary-font-family,var(--paper-font-body1_-_font-family,Roboto,Noto,sans-serif));-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-size:var(--paper-font-body1_-_font-size,14px);font-weight:var(--paper-font-body1_-_font-weight,400);line-height:var(--paper-font-body1_-_line-height,20px)}\
+.preview-container>*{max-width:300px;width:100%;--ha-card-border-radius:var(--ha-card-border-radius,12px);--ha-card-background:var(--ha-card-background,var(--card-background-color,#fff));--ha-card-box-shadow:var(--ha-card-box-shadow,none)}\
 .preview-placeholder{color:var(--bct-text2);font-size:14px;text-align:center;padding:40px 0}\
 .preview-warning{color:var(--warning-color,#ff9800);font-size:13px;padding:8px 16px;text-align:center}\
 .resolved-section{border-top:1px solid var(--bct-border)}\
