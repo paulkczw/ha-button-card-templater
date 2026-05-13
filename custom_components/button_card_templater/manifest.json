@@ -1,7 +1,7 @@
 {
   "domain": "button_card_templater",
   "name": "Button Card Templater",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "documentation": "https://github.com/paulkczw/ha-button-card-templater",
   "issue_tracker": "https://github.com/paulkczw/ha-button-card-templater/issues",
   "codeowners": ["@paulkczw"],
