@@ -150,6 +150,8 @@
 :host{display:block;height:100%;background:var(--primary-background-color,#fafafa);color:var(--primary-text-color,#212121);font-family:var(--paper-font-body1_-_font-family,Roboto,sans-serif);--bct-accent:var(--primary-color,#03a9f4);--bct-surface:var(--card-background-color,#fff);--bct-border:var(--divider-color,#e0e0e0);--bct-text2:var(--secondary-text-color,#727272);--bct-error:var(--error-color,#db4437);--bct-radius:12px}\
 .container{display:flex;flex-direction:column;height:100%;overflow:hidden}\
 .toolbar{display:flex;align-items:center;padding:8px 16px;background:var(--bct-surface);border-bottom:1px solid var(--bct-border);gap:8px;flex-wrap:wrap}\
+#menu-btn{display:flex;align-items:center;flex-shrink:0}\
+#menu-btn ha-menu-button{--mdc-icon-button-size:40px;color:var(--sidebar-icon-color,var(--bct-text2))}\
 .title{font-size:18px;font-weight:500;white-space:nowrap;margin-right:4px}\
 .tb-group{display:flex;align-items:center;gap:4px}\
 .tb-group label{font-size:11px;font-weight:500;color:var(--bct-text2);white-space:nowrap}\
@@ -249,13 +251,17 @@
 
     set hass(hass) {
       this._hass = hass;
+      if (this._menuBtn) this._menuBtn.hass = hass;
       var picker = this.shadowRoot && this.shadowRoot.querySelector("ha-entity-picker");
       if (picker) picker.hass = hass;
       if (this._cardEl && hass) this._cardEl.hass = this._buildPreviewHass();
       // Auto-load dashboards on first hass
       if (hass && this._initialized && !this._dashboardsLoaded) this._loadDashboards();
     }
-    set narrow(v) {}
+    set narrow(v) {
+      this._narrow = v;
+      if (this._menuBtn) this._menuBtn.narrow = v;
+    }
     set panel(v) {}
 
     // ---- Lifecycle ----
@@ -283,6 +289,7 @@
       c.className = 'container';
       c.innerHTML =
         '<div class="toolbar">' +
+        '  <div id="menu-btn"></div>' +
         '  <span class="title">Card Templater</span>' +
         '  <div class="tb-group"><label>Dashboard</label><select id="sel-dash" class="tb-select"></select></div>' +
         '  <div class="tb-group"><label>Template</label><select id="sel-tpl" class="tb-select"></select></div>' +
@@ -325,9 +332,21 @@
         '<div id="error-bar" class="error-bar" style="display:none"></div>';
       s.appendChild(c);
 
+      this._setupMenuButton();
       this._setupEditor();
       this._setupEntityPicker();
       this._attachEvents();
+    }
+
+    // ---- HA Menu Button (hamburger for sidebar toggle) ----
+    _setupMenuButton() {
+      var slot = this.shadowRoot.getElementById('menu-btn');
+      if (!slot || !customElements.get('ha-menu-button')) return;
+      var btn = document.createElement('ha-menu-button');
+      btn.hass = this._hass;
+      btn.narrow = this._narrow || false;
+      slot.appendChild(btn);
+      this._menuBtn = btn;
     }
 
     // ---- Editor ----
