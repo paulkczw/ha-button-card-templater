@@ -237,24 +237,66 @@
   // Domain-aware state presets
   // ============================================================
   var DOMAIN_PRESETS = {
+    // Lights & switches
     light:          ['on', 'off', 'unavailable'],
     switch:         ['on', 'off', 'unavailable'],
-    input_boolean:  ['on', 'off'],
-    binary_sensor:  ['on', 'off', 'unavailable'],
+    fan:            ['on', 'off', 'unavailable'],
+    // Sensors
     sensor:         ['25', '0', '100', 'unavailable', 'unknown'],
+    binary_sensor:  ['on', 'off', 'unavailable'],
+    // Helpers
+    input_boolean:  ['on', 'off'],
     input_number:   ['0', '50', '100'],
-    input_text:     ['hello', '', 'unavailable'],
+    input_text:     ['', 'hello', 'unavailable'],
     input_select:   [],
-    climate:        ['auto', 'heat', 'cool', 'off', 'unavailable'],
-    media_player:   ['playing', 'paused', 'idle', 'off', 'unavailable'],
+    input_button:   ['unknown'],
+    input_datetime: ['2026-01-01 12:00:00', 'unknown'],
+    counter:        ['0', '1', '5', '10'],
+    timer:          ['active', 'paused', 'idle'],
+    schedule:       ['on', 'off'],
+    // Climate & water
+    climate:        ['auto', 'heat', 'cool', 'heat_cool', 'dry', 'fan_only', 'off', 'unavailable'],
+    humidifier:     ['on', 'off', 'unavailable'],
+    water_heater:   ['eco', 'electric', 'gas', 'heat_pump', 'off', 'unavailable'],
+    // Media
+    media_player:   ['playing', 'paused', 'idle', 'standby', 'off', 'unavailable'],
+    // Covers & locks
+    cover:          ['open', 'closed', 'opening', 'closing', 'unavailable'],
+    lock:           ['locked', 'unlocked', 'locking', 'unlocking', 'jammed', 'unavailable'],
+    // People & presence
     person:         ['home', 'not_home', 'unknown'],
     device_tracker: ['home', 'not_home', 'unknown'],
-    cover:          ['open', 'closed', 'opening', 'closing', 'unavailable'],
-    fan:            ['on', 'off', 'unavailable'],
-    vacuum:         ['cleaning', 'docked', 'idle', 'returning', 'unavailable'],
-    timer:          ['active', 'paused', 'idle'],
-    alarm_control_panel: ['armed_away', 'armed_home', 'disarmed', 'triggered'],
-    lock:           ['locked', 'unlocked', 'unavailable'],
+    zone:           ['0', '1', '2'],
+    // Vacuum & lawn
+    vacuum:         ['cleaning', 'docked', 'idle', 'returning', 'paused', 'error', 'unavailable'],
+    lawn_mower:     ['mowing', 'docked', 'paused', 'error', 'unavailable'],
+    // Security
+    alarm_control_panel: ['armed_away', 'armed_home', 'armed_night', 'disarmed', 'triggered', 'pending', 'unavailable'],
+    // Automations & scripts
+    automation:     ['on', 'off', 'unavailable'],
+    script:         ['on', 'off'],
+    scene:          ['scening'],
+    // Weather & sun
+    weather:        ['sunny', 'cloudy', 'partlycloudy', 'rainy', 'snowy', 'fog', 'unavailable'],
+    sun:            ['above_horizon', 'below_horizon'],
+    // Other
+    camera:         ['idle', 'recording', 'streaming', 'unavailable'],
+    remote:         ['on', 'off', 'unavailable'],
+    siren:          ['on', 'off', 'unavailable'],
+    button:         ['unknown'],
+    event:          ['unknown'],
+    update:         ['on', 'off', 'unavailable'],
+    number:         ['0', '50', '100'],
+    select:         [],
+    text:           ['', 'hello'],
+    date:           ['2026-01-01'],
+    time:           ['12:00:00'],
+    datetime:       ['2026-01-01 12:00:00'],
+    image:          ['idle', 'unavailable'],
+    tts:            ['idle', 'unavailable'],
+    stt:            ['idle', 'unavailable'],
+    conversation:   ['idle', 'unavailable'],
+    valve:          ['open', 'closed', 'opening', 'closing', 'unavailable'],
     _default:       ['on', 'off', 'unavailable']
   };
 
