@@ -10,9 +10,8 @@ A Home Assistant custom integration that adds a dedicated **editor panel** for [
 
 ---
 
-> **WARNING - EARLY DEVELOPMENT**
->
-> This integration is in early development. Bugs and unexpected behavior may occur, especially when saving templates back to a dashboard. **Before using this tool, manually back up your dashboard YAML** (Raw Configuration Editor > Select All > Copy > Save to a text file). This ensures you can always restore your templates if something goes wrong.
+> [!WARNING]
+> **EARLY DEVELOPMENT** - This integration is in early development. Bugs and unexpected behavior may occur, especially when saving templates back to a dashboard. **Before using this tool, manually back up your dashboard YAML** (Raw Configuration Editor > Select All > Copy > Save to a text file). This ensures you can always restore your templates if something goes wrong.
 
 ---
 
