@@ -161,7 +161,7 @@
 .tb.danger{color:var(--bct-error);border-color:var(--bct-error)}\
 .tb.danger:hover{background:var(--bct-error);color:#fff}\
 .main{display:flex;flex:1;overflow:hidden}\
-.editor-pane{display:flex;flex-direction:column;min-width:200px;width:50%;overflow:hidden}\
+.editor-pane{display:flex;flex-direction:column;min-width:200px;width:50%;overflow:hidden;min-height:0}\
 .splitter{width:6px;cursor:col-resize;background:var(--bct-border);position:relative;flex-shrink:0;transition:background .15s}\
 .splitter:hover,.splitter.active{background:var(--bct-accent)}\
 .splitter::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:32px;border-radius:1px;background:var(--bct-text2);opacity:.4}\
@@ -169,9 +169,9 @@
 .preview-pane{display:flex;flex-direction:column;overflow-y:auto;min-width:200px;flex:1}\
 .pane-header{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--bct-text2);padding:12px 16px 4px}\
 .pane-header.clickable{cursor:pointer;user-select:none}\
-.editor-wrapper{flex:1;display:flex;overflow:hidden;padding:0 8px 8px}\
-.editor-wrapper ha-code-editor{flex:1;--code-mirror-max-height:none}\
-.yaml-textarea{flex:1;width:100%;border:1px solid var(--bct-border);border-radius:var(--bct-radius);background:var(--bct-surface);color:var(--primary-text-color);font-family:'Fira Code','Source Code Pro',Consolas,monospace;font-size:13px;line-height:1.5;padding:12px;resize:none;tab-size:2;outline:none}\
+.editor-wrapper{flex:1;display:flex;overflow:auto;padding:0 8px 8px;min-height:0}\
+.editor-wrapper ha-code-editor{flex:1;min-height:0;--code-mirror-max-height:100%;overflow:auto}\
+.yaml-textarea{flex:1;width:100%;border:1px solid var(--bct-border);border-radius:var(--bct-radius);background:var(--bct-surface);color:var(--primary-text-color);font-family:'Fira Code','Source Code Pro',Consolas,monospace;font-size:13px;line-height:1.5;padding:12px;resize:none;tab-size:2;outline:none;overflow:auto}\
 .yaml-textarea:focus{border-color:var(--bct-accent)}\
 .controls-section{padding:0 16px 8px;border-bottom:1px solid var(--bct-border)}\
 .control-group{margin-bottom:12px}\
