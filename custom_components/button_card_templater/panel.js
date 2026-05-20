@@ -192,8 +192,8 @@
 .var-value{flex:1;padding:4px 8px;border:1px solid var(--bct-border);border-radius:6px;background:var(--bct-surface);color:var(--primary-text-color);font-family:monospace;font-size:12px;outline:none}\
 .var-value:focus{border-color:var(--bct-accent)}\
 .preview-section{flex:1;display:flex;flex-direction:column;min-height:200px}\
-.preview-container{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}\
-.preview-container>*{max-width:300px;width:100%}\
+.preview-container{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;font-family:var(--primary-font-family,var(--paper-font-body1_-_font-family,Roboto,Noto,sans-serif));-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-size:var(--paper-font-body1_-_font-size,14px);font-weight:var(--paper-font-body1_-_font-weight,400);line-height:var(--paper-font-body1_-_line-height,20px)}\
+.preview-container>*{max-width:300px;width:100%;--ha-card-border-radius:var(--ha-card-border-radius,12px);--ha-card-background:var(--ha-card-background,var(--card-background-color,#fff));--ha-card-box-shadow:var(--ha-card-box-shadow,none)}\
 .preview-placeholder{color:var(--bct-text2);font-size:14px;text-align:center;padding:40px 0}\
 .preview-warning{color:var(--warning-color,#ff9800);font-size:13px;padding:8px 16px;text-align:center}\
 .resolved-section{border-top:1px solid var(--bct-border)}\
@@ -221,9 +221,90 @@
 .extra-entity-header input:focus{border-color:var(--bct-accent)}\
 .section-toggle{font-size:11px;color:var(--bct-text2);cursor:pointer;user-select:none;padding:4px 0}\
 .section-toggle:hover{color:var(--bct-accent)}\
+.entity-block{border:1px solid var(--bct-border);border-radius:var(--bct-radius);padding:8px;margin-bottom:8px;background:var(--bct-surface)}\
+.entity-block-header{display:flex;align-items:center;gap:6px;margin-bottom:4px}\
+.entity-block-header .entity-label{font-size:11px;font-weight:600;color:var(--bct-accent);white-space:nowrap}\
+.entity-block-header .rm{margin-left:auto}\
+.entity-block ha-entity-picker{width:100%;display:block;margin-bottom:4px}\
+.entity-block .entity-input{width:100%;margin-bottom:4px}\
+.entity-block .state-row{display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap}\
+.entity-block .state-row label{font-size:10px;color:var(--bct-text2);white-space:nowrap}\
 @media(max-width:900px){.main{flex-direction:column}.editor-pane{width:100%!important;min-height:200px;max-height:50%;border-right:none;border-bottom:1px solid var(--bct-border)}.splitter{width:100%;height:6px;cursor:row-resize}.splitter::after{width:32px;height:2px}.preview-pane{min-height:200px}}\
 @media(max-width:600px){.title{font-size:15px}.tb-select{min-width:80px;font-size:12px}.tb{padding:4px 8px;font-size:11px}.tb-group label{display:none}}\
 ";
+
+  // ============================================================
+  // Domain-aware state presets
+  // ============================================================
+  var DOMAIN_PRESETS = {
+    // Lights & switches
+    light:          ['on', 'off', 'unavailable'],
+    switch:         ['on', 'off', 'unavailable'],
+    fan:            ['on', 'off', 'unavailable'],
+    // Sensors
+    sensor:         ['25', '0', '100', 'unavailable', 'unknown'],
+    binary_sensor:  ['on', 'off', 'unavailable'],
+    // Helpers
+    input_boolean:  ['on', 'off'],
+    input_number:   ['0', '50', '100'],
+    input_text:     ['', 'hello', 'unavailable'],
+    input_select:   [],
+    input_button:   ['unknown'],
+    input_datetime: ['2026-01-01 12:00:00', 'unknown'],
+    counter:        ['0', '1', '5', '10'],
+    timer:          ['active', 'paused', 'idle'],
+    schedule:       ['on', 'off'],
+    // Climate & water
+    climate:        ['auto', 'heat', 'cool', 'heat_cool', 'dry', 'fan_only', 'off', 'unavailable'],
+    humidifier:     ['on', 'off', 'unavailable'],
+    water_heater:   ['eco', 'electric', 'gas', 'heat_pump', 'off', 'unavailable'],
+    // Media
+    media_player:   ['playing', 'paused', 'idle', 'standby', 'off', 'unavailable'],
+    // Covers & locks
+    cover:          ['open', 'closed', 'opening', 'closing', 'unavailable'],
+    lock:           ['locked', 'unlocked', 'locking', 'unlocking', 'jammed', 'unavailable'],
+    // People & presence
+    person:         ['home', 'not_home', 'unknown'],
+    device_tracker: ['home', 'not_home', 'unknown'],
+    zone:           ['0', '1', '2'],
+    // Vacuum & lawn
+    vacuum:         ['cleaning', 'docked', 'idle', 'returning', 'paused', 'error', 'unavailable'],
+    lawn_mower:     ['mowing', 'docked', 'paused', 'error', 'unavailable'],
+    // Security
+    alarm_control_panel: ['armed_away', 'armed_home', 'armed_night', 'disarmed', 'triggered', 'pending', 'unavailable'],
+    // Automations & scripts
+    automation:     ['on', 'off', 'unavailable'],
+    script:         ['on', 'off'],
+    scene:          ['scening'],
+    // Weather & sun
+    weather:        ['sunny', 'cloudy', 'partlycloudy', 'rainy', 'snowy', 'fog', 'unavailable'],
+    sun:            ['above_horizon', 'below_horizon'],
+    // Other
+    camera:         ['idle', 'recording', 'streaming', 'unavailable'],
+    remote:         ['on', 'off', 'unavailable'],
+    siren:          ['on', 'off', 'unavailable'],
+    button:         ['unknown'],
+    event:          ['unknown'],
+    update:         ['on', 'off', 'unavailable'],
+    number:         ['0', '50', '100'],
+    select:         [],
+    text:           ['', 'hello'],
+    date:           ['2026-01-01'],
+    time:           ['12:00:00'],
+    datetime:       ['2026-01-01 12:00:00'],
+    image:          ['idle', 'unavailable'],
+    tts:            ['idle', 'unavailable'],
+    stt:            ['idle', 'unavailable'],
+    conversation:   ['idle', 'unavailable'],
+    valve:          ['open', 'closed', 'opening', 'closing', 'unavailable'],
+    _default:       ['on', 'off', 'unavailable']
+  };
+
+  function getPresetsForEntity(entityId) {
+    if (!entityId) return DOMAIN_PRESETS._default;
+    var domain = entityId.split('.')[0];
+    return DOMAIN_PRESETS[domain] || DOMAIN_PRESETS._default;
+  }
 
   // ============================================================
   // Panel Custom Element
@@ -252,8 +333,10 @@
     set hass(hass) {
       this._hass = hass;
       if (this._menuBtn) this._menuBtn.hass = hass;
-      var picker = this.shadowRoot && this.shadowRoot.querySelector("ha-entity-picker");
-      if (picker) picker.hass = hass;
+      // Update all entity pickers in entity blocks
+      if (this.shadowRoot) {
+        this.shadowRoot.querySelectorAll('ha-entity-picker').forEach(function (p) { p.hass = hass; });
+      }
       if (this._cardEl && hass) this._cardEl.hass = this._buildPreviewHass();
       // Auto-load dashboards on first hass
       if (hass && this._initialized && !this._dashboardsLoaded) this._loadDashboards();
@@ -307,20 +390,12 @@
         '  <div class="splitter" id="splitter"></div>' +
         '  <div class="preview-pane">' +
         '    <div class="controls-section">' +
-        '      <div class="pane-header">Controls</div>' +
-        '      <div class="control-group"><label>Entity</label><div id="entity-picker-wrapper"></div></div>' +
-        '      <div class="control-group"><label>State Override</label>' +
-        '        <div class="state-buttons" id="state-buttons">' +
-        '          <button class="state-btn active" data-state="">Auto</button>' +
-        '          <button class="state-btn" data-state="on">on</button>' +
-        '          <button class="state-btn" data-state="off">off</button>' +
-        '          <button class="state-btn" data-state="unavailable">unavailable</button>' +
-        '          <input type="text" id="custom-state" placeholder="custom..." class="custom-state-input">' +
-        '        </div>' +
-        '      </div>' +
-        '      <div class="control-group" id="variables-section" style="display:none"><label>Variables</label><div id="variables-editor"></div></div>' +
-        '      <div class="control-group"><label>Entity Attributes</label><div id="attr-editor"></div><button class="add-btn" id="btn-add-attr">+ Add Attribute</button></div>' +
-        '      <div class="control-group"><label>Extra Entities <span style="font-weight:400;opacity:.7">(for states[...] access)</span></label><div id="extra-entities"></div><button class="add-btn" id="btn-add-entity">+ Add Entity</button></div>' +
+        '      <div class="pane-header">Entities</div>' +
+        '      <div id="main-entity-block"></div>' +
+        '      <div class="pane-header" style="padding-top:8px">Extra Entities <span style="font-weight:400;opacity:.6;text-transform:none">(for states[...] access)</span></div>' +
+        '      <div id="extra-entities"></div>' +
+        '      <button class="add-btn" id="btn-add-entity">+ Add Entity</button>' +
+        '      <div class="control-group" id="variables-section" style="display:none;margin-top:12px"><label>Variables</label><div id="variables-editor"></div></div>' +
         '    </div>' +
         '    <div class="preview-section"><div class="pane-header">Preview</div>' +
         '      <div id="preview-container" class="preview-container"><div class="preview-placeholder">Select a dashboard to start</div></div>' +
@@ -371,17 +446,212 @@
     }
 
     _setupEntityPicker() {
-      var w = this.shadowRoot.getElementById('entity-picker-wrapper'), self = this;
-      if (customElements.get('ha-entity-picker')) {
-        var p = document.createElement('ha-entity-picker');
-        p.hass = this._hass; p.allowCustomEntity = true;
-        p.addEventListener('value-changed', function (e) { self._selectedEntity = e.detail.value || ''; self._updatePreview(); });
-        w.appendChild(p);
-      } else {
-        var inp = document.createElement('input'); inp.type = 'text'; inp.className = 'entity-input'; inp.placeholder = 'light.living_room';
-        inp.addEventListener('input', function () { self._selectedEntity = inp.value; self._updatePreview(); });
-        w.appendChild(inp);
+      this._buildMainEntityBlock();
+    }
+
+    // ---- Build a single entity block (main or extra) ----
+    _createEntityBlock(opts) {
+      // opts: { isMain, entityId, state, attributes, onRemove }
+      var self = this;
+      var block = document.createElement('div');
+      block.className = 'entity-block';
+
+      var header = document.createElement('div');
+      header.className = 'entity-block-header';
+      var label = document.createElement('span');
+      label.className = 'entity-label';
+      label.textContent = opts.isMain ? 'Main Entity' : 'Extra';
+      header.appendChild(label);
+      if (!opts.isMain && opts.onRemove) {
+        var rm = document.createElement('button');
+        rm.className = 'rm'; rm.textContent = '\u00d7';
+        rm.addEventListener('click', function () { block.remove(); self._syncAllEntities(); self._updatePreview(); });
+        header.appendChild(rm);
       }
+      block.appendChild(header);
+
+      // Entity picker
+      var pickerData = { entityId: opts.entityId || '' };
+      if (customElements.get('ha-entity-picker')) {
+        var picker = document.createElement('ha-entity-picker');
+        picker.hass = self._hass;
+        picker.value = opts.entityId || '';
+        picker.allowCustomEntity = true;
+        picker.addEventListener('value-changed', function (e) {
+          pickerData.entityId = e.detail.value || '';
+          self._updateStatePresets(block, pickerData.entityId);
+          self._syncAllEntities();
+          self._updatePreview();
+        });
+        block.appendChild(picker);
+        block._picker = picker;
+      } else {
+        var inp = document.createElement('input');
+        inp.type = 'text'; inp.className = 'entity-input';
+        inp.placeholder = 'entity_id'; inp.value = opts.entityId || '';
+        inp.addEventListener('input', function () {
+          pickerData.entityId = inp.value;
+          self._updateStatePresets(block, pickerData.entityId);
+          self._syncAllEntities();
+          self._updatePreview();
+        });
+        block.appendChild(inp);
+      }
+
+      // State row
+      var stateRow = document.createElement('div');
+      stateRow.className = 'state-row';
+      var stateLabel = document.createElement('label');
+      stateLabel.textContent = 'State:';
+      stateRow.appendChild(stateLabel);
+
+      var presetsDiv = document.createElement('span');
+      presetsDiv.className = 'state-presets';
+      presetsDiv.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap;align-items:center';
+      stateRow.appendChild(presetsDiv);
+
+      var customInp = document.createElement('input');
+      customInp.type = 'text'; customInp.className = 'custom-state-input';
+      customInp.placeholder = 'custom...'; customInp.value = opts.state || '';
+      customInp.addEventListener('input', function () {
+        presetsDiv.querySelectorAll('.state-btn').forEach(function (b) { b.classList.remove('active'); });
+        self._syncAllEntities();
+        self._updatePreview();
+      });
+      stateRow.appendChild(customInp);
+      block.appendChild(stateRow);
+
+      block._statePresetsDiv = presetsDiv;
+      block._stateInput = customInp;
+      block._pickerData = pickerData;
+
+      // Build initial presets
+      self._updateStatePresets(block, opts.entityId || '');
+      if (opts.state) { customInp.value = opts.state; }
+
+      // Attributes
+      var attrLabel = document.createElement('label');
+      attrLabel.style.cssText = 'font-size:10px;color:var(--bct-text2);display:block;margin:4px 0 2px';
+      attrLabel.textContent = 'Attributes';
+      block.appendChild(attrLabel);
+
+      var attrContainer = document.createElement('div');
+      attrContainer.className = 'entity-attrs';
+      block.appendChild(attrContainer);
+
+      var addAttrBtn = document.createElement('button');
+      addAttrBtn.className = 'add-btn';
+      addAttrBtn.textContent = '+ Attribute';
+      addAttrBtn.style.cssText = 'font-size:10px;padding:2px 6px';
+      addAttrBtn.addEventListener('click', function () {
+        self._addAttrRow(attrContainer, '', '');
+      });
+      block.appendChild(addAttrBtn);
+
+      block._attrContainer = attrContainer;
+
+      // Pre-populate attributes
+      if (opts.attributes && typeof opts.attributes === 'object') {
+        Object.keys(opts.attributes).forEach(function (k) {
+          var v = opts.attributes[k];
+          self._addAttrRow(attrContainer, k, typeof v === 'object' ? JSON.stringify(v) : String(v));
+        });
+      }
+
+      return block;
+    }
+
+    _updateStatePresets(block, entityId) {
+      var self = this;
+      var presets = getPresetsForEntity(entityId);
+      var container = block._statePresetsDiv;
+      var customInp = block._stateInput;
+      container.innerHTML = '';
+
+      // Auto button
+      var autoBtn = document.createElement('button');
+      autoBtn.className = 'state-btn active';
+      autoBtn.setAttribute('data-state', '');
+      autoBtn.textContent = 'Auto';
+      autoBtn.addEventListener('click', function () {
+        container.querySelectorAll('.state-btn').forEach(function (b) { b.classList.remove('active'); });
+        autoBtn.classList.add('active');
+        customInp.value = '';
+        self._syncAllEntities();
+        self._updatePreview();
+      });
+      container.appendChild(autoBtn);
+
+      presets.forEach(function (preset) {
+        var btn = document.createElement('button');
+        btn.className = 'state-btn';
+        btn.setAttribute('data-state', preset);
+        btn.textContent = preset;
+        btn.addEventListener('click', function () {
+          container.querySelectorAll('.state-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          customInp.value = preset;
+          self._syncAllEntities();
+          self._updatePreview();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    _addAttrRow(container, key, val) {
+      var self = this;
+      var row = document.createElement('div'); row.className = 'attr-row';
+      var kInp = document.createElement('input'); kInp.placeholder = 'key'; kInp.value = key;
+      var vInp = document.createElement('input'); vInp.placeholder = 'value'; vInp.value = val;
+      var rm = document.createElement('button'); rm.className = 'rm'; rm.textContent = '\u00d7';
+      rm.addEventListener('click', function () { row.remove(); self._syncAllEntities(); self._updatePreview(); });
+      kInp.addEventListener('input', function () { self._syncAllEntities(); self._updatePreview(); });
+      vInp.addEventListener('input', function () { self._syncAllEntities(); self._updatePreview(); });
+      row.appendChild(kInp); row.appendChild(vInp); row.appendChild(rm);
+      container.appendChild(row);
+    }
+
+    _buildMainEntityBlock() {
+      var container = this.shadowRoot.getElementById('main-entity-block');
+      container.innerHTML = '';
+      var block = this._createEntityBlock({ isMain: true, entityId: this._selectedEntity });
+      container.appendChild(block);
+      this._mainEntityBlock = block;
+    }
+
+    // ---- Sync all entity blocks into state ----
+    _syncAllEntities() {
+      var self = this;
+
+      // Main entity
+      if (this._mainEntityBlock) {
+        var pd = this._mainEntityBlock._pickerData;
+        this._selectedEntity = pd ? pd.entityId : '';
+        this._stateOverride = this._mainEntityBlock._stateInput.value.trim();
+        this._attributeOverrides = this._readAttrsFromBlock(this._mainEntityBlock);
+      }
+
+      // Extra entities
+      this._extraEntities = [];
+      this.shadowRoot.querySelectorAll('#extra-entities .entity-block').forEach(function (block) {
+        var pd = block._pickerData;
+        if (!pd || !pd.entityId) return;
+        self._extraEntities.push({
+          entity_id: pd.entityId,
+          state: block._stateInput.value.trim() || 'on',
+          attributes: self._readAttrsFromBlock(block)
+        });
+      });
+    }
+
+    _readAttrsFromBlock(block) {
+      var attrs = {};
+      block._attrContainer.querySelectorAll('.attr-row').forEach(function (row) {
+        var inputs = row.querySelectorAll('input');
+        var k = inputs[0].value.trim(), v = inputs[1].value.trim();
+        if (k) { try { attrs[k] = JSON.parse(v); } catch (e) { attrs[k] = v; } }
+      });
+      return attrs;
     }
 
     // ---- Events ----
@@ -404,7 +674,7 @@
         var startW = editorPane.offsetWidth;
         var onMove = function (ev) {
           var newW = startW + (ev.clientX - startX);
-          var maxW = mainEl.offsetWidth - 206; // 200 min + 6 splitter
+          var maxW = mainEl.offsetWidth - 206;
           editorPane.style.width = Math.max(200, Math.min(newW, maxW)) + 'px';
         };
         var onUp = function () {
@@ -415,7 +685,6 @@
         document.addEventListener('mousemove', onMove);
         document.addEventListener('mouseup', onUp);
       });
-      // Touch support for mobile
       splitter.addEventListener('touchstart', function (e) {
         e.preventDefault();
         splitter.classList.add('active');
@@ -435,21 +704,11 @@
         document.addEventListener('touchend', onEnd);
       });
 
-      this.shadowRoot.getElementById('btn-add-attr').addEventListener('click', function () { self._addAttributeRow('', ''); });
-      this.shadowRoot.getElementById('btn-add-entity').addEventListener('click', function () { self._addExtraEntity(); });
-      this.shadowRoot.getElementById('state-buttons').addEventListener('click', function (e) {
-        if (!e.target.classList.contains('state-btn')) return;
-        self.shadowRoot.querySelectorAll('.state-btn').forEach(function (b) { b.classList.remove('active'); });
-        e.target.classList.add('active');
-        self._stateOverride = e.target.getAttribute('data-state');
-        self.shadowRoot.getElementById('custom-state').value = '';
-        self._updatePreview();
-      });
-      this.shadowRoot.getElementById('custom-state').addEventListener('input', function (e) {
-        if (e.target.value) {
-          self.shadowRoot.querySelectorAll('.state-btn').forEach(function (b) { b.classList.remove('active'); });
-          self._stateOverride = e.target.value; self._updatePreview();
-        }
+      // ---- Extra entity add button ----
+      this.shadowRoot.getElementById('btn-add-entity').addEventListener('click', function () {
+        var container = self.shadowRoot.getElementById('extra-entities');
+        var block = self._createEntityBlock({ isMain: false, onRemove: true });
+        container.appendChild(block);
       });
     }
 
@@ -664,104 +923,6 @@
         });
         row.appendChild(k); row.appendChild(v); editor.appendChild(row);
       });
-    }
-
-    // ---- Attribute Editor ----
-    _addAttributeRow(key, val) {
-      var self = this;
-      var container = this.shadowRoot.getElementById('attr-editor');
-      var row = document.createElement('div'); row.className = 'attr-row';
-      var kInp = document.createElement('input'); kInp.placeholder = 'key (e.g. brightness)'; kInp.value = key;
-      var vInp = document.createElement('input'); vInp.placeholder = 'value (e.g. 255)'; vInp.value = val;
-      var rm = document.createElement('button'); rm.className = 'rm'; rm.textContent = '\u00d7';
-      rm.addEventListener('click', function () { row.remove(); self._syncAttributes(); self._updatePreview(); });
-      kInp.addEventListener('input', function () { self._syncAttributes(); self._updatePreview(); });
-      vInp.addEventListener('input', function () { self._syncAttributes(); self._updatePreview(); });
-      row.appendChild(kInp); row.appendChild(vInp); row.appendChild(rm);
-      container.appendChild(row);
-    }
-
-    _syncAttributes() {
-      var attrs = {};
-      this.shadowRoot.querySelectorAll('#attr-editor .attr-row').forEach(function (row) {
-        var inputs = row.querySelectorAll('input');
-        var k = inputs[0].value.trim(), v = inputs[1].value.trim();
-        if (k) {
-          // Try to parse as JSON (for arrays, numbers, booleans)
-          try { attrs[k] = JSON.parse(v); } catch (e) { attrs[k] = v; }
-        }
-      });
-      this._attributeOverrides = attrs;
-    }
-
-    // ---- Extra Entities (for states[...] mocks) ----
-    _addExtraEntity(entityId, state, attrs) {
-      var self = this;
-      var container = this.shadowRoot.getElementById('extra-entities');
-      var wrapper = document.createElement('div'); wrapper.className = 'extra-entity';
-
-      var header = document.createElement('div'); header.className = 'extra-entity-header';
-      var eidInp = document.createElement('input'); eidInp.placeholder = 'entity_id (e.g. sensor.temp)'; eidInp.value = entityId || ''; eidInp.style.flex = '2';
-      var stInp = document.createElement('input'); stInp.placeholder = 'state'; stInp.value = state || 'on';
-      var rm = document.createElement('button'); rm.className = 'rm'; rm.textContent = '\u00d7';
-      rm.addEventListener('click', function () { wrapper.remove(); self._syncExtraEntities(); self._updatePreview(); });
-
-      header.appendChild(eidInp); header.appendChild(stInp); header.appendChild(rm);
-      wrapper.appendChild(header);
-
-      // Attributes for this extra entity
-      var attrContainer = document.createElement('div'); attrContainer.className = 'extra-attrs';
-      wrapper.appendChild(attrContainer);
-
-      var addAttrBtn = document.createElement('button'); addAttrBtn.className = 'add-btn';
-      addAttrBtn.textContent = '+ attribute'; addAttrBtn.style.fontSize = '10px'; addAttrBtn.style.padding = '2px 6px';
-      addAttrBtn.addEventListener('click', function () {
-        self._addExtraEntityAttrRow(attrContainer, '', '');
-      });
-      wrapper.appendChild(addAttrBtn);
-
-      container.appendChild(wrapper);
-
-      // Pre-populate attributes if provided
-      if (attrs && typeof attrs === 'object') {
-        Object.keys(attrs).forEach(function (k) {
-          self._addExtraEntityAttrRow(attrContainer, k, typeof attrs[k] === 'object' ? JSON.stringify(attrs[k]) : String(attrs[k]));
-        });
-      }
-
-      eidInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
-      stInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
-    }
-
-    _addExtraEntityAttrRow(container, key, val) {
-      var self = this;
-      var row = document.createElement('div'); row.className = 'attr-row';
-      var kInp = document.createElement('input'); kInp.placeholder = 'attr key'; kInp.value = key; kInp.style.flex = '1';
-      var vInp = document.createElement('input'); vInp.placeholder = 'value'; vInp.value = val; vInp.style.flex = '1';
-      var rm = document.createElement('button'); rm.className = 'rm'; rm.textContent = '\u00d7';
-      rm.addEventListener('click', function () { row.remove(); self._syncExtraEntities(); self._updatePreview(); });
-      kInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
-      vInp.addEventListener('input', function () { self._syncExtraEntities(); self._updatePreview(); });
-      row.appendChild(kInp); row.appendChild(vInp); row.appendChild(rm);
-      container.appendChild(row);
-    }
-
-    _syncExtraEntities() {
-      var entities = [];
-      this.shadowRoot.querySelectorAll('#extra-entities .extra-entity').forEach(function (wrapper) {
-        var headerInputs = wrapper.querySelectorAll('.extra-entity-header input');
-        var eid = headerInputs[0].value.trim();
-        var st = headerInputs[1].value.trim() || 'on';
-        if (!eid) return;
-        var attrs = {};
-        wrapper.querySelectorAll('.extra-attrs .attr-row').forEach(function (row) {
-          var inputs = row.querySelectorAll('input');
-          var k = inputs[0].value.trim(), v = inputs[1].value.trim();
-          if (k) { try { attrs[k] = JSON.parse(v); } catch (e) { attrs[k] = v; } }
-        });
-        entities.push({ entity_id: eid, state: st, attributes: attrs });
-      });
-      this._extraEntities = entities;
     }
 
     // ---- Build mock hass ----
