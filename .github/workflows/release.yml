@@ -1,0 +1,144 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g. 0.1.1 or 0.2.0-rc.1)"
+        required: true
+      channel:
+        description: "Release channel"
+        required: true
+        type: choice
+        options:
+          - stable
+          - beta
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine release type
+        id: meta
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          TAG="v${VERSION}"
+          COMMIT="${{ github.sha }}"
+          SHORT_COMMIT="${COMMIT:0:8}"
+          CHANNEL="${{ github.event.inputs.channel }}"
+
+          # Auto-detect pre-release from version string
+          if [[ "$VERSION" == *"-rc"* ]] || [[ "$VERSION" == *"-beta"* ]] || [[ "$VERSION" == *"-alpha"* ]] || [[ "$CHANNEL" == "beta" ]]; then
+            PRERELEASE="true"
+          else
+            PRERELEASE="false"
+          fi
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "commit=${SHORT_COMMIT}" >> "$GITHUB_OUTPUT"
+          echo "channel=${CHANNEL}" >> "$GITHUB_OUTPUT"
+          echo "prerelease=${PRERELEASE}" >> "$GITHUB_OUTPUT"
+
+      - name: Update version in manifest.json
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" \
+            custom_components/button_card_templater/manifest.json
+          cat custom_components/button_card_templater/manifest.json
+
+      - name: Package integration
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          cd custom_components
+          zip -r "../button_card_templater-${VERSION}.zip" button_card_templater/
+          cd ..
+          ls -la "button_card_templater-${VERSION}.zip"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Find the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          TAG="${{ steps.meta.outputs.tag }}"
+
+          if [ -n "$PREV_TAG" ]; then
+            CHANGELOG="Full changelog: ${PREV_TAG}...${TAG}"
+          else
+            CHANGELOG="Initial release"
+          fi
+
+          echo "changelog=${CHANGELOG}" >> "$GITHUB_OUTPUT"
+          echo "prev_tag=${PREV_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Create tag
+        run: |
+          TAG="${{ steps.meta.outputs.tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add custom_components/button_card_templater/manifest.json
+          git diff --cached --quiet || git commit -m "release: ${TAG}"
+          git tag -a "${TAG}" -m "Release ${TAG}"
+          git push origin HEAD "${TAG}"
+
+      - name: Build release body
+        id: body
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          TAG="${{ steps.meta.outputs.tag }}"
+          CHANNEL="${{ steps.meta.outputs.channel }}"
+          COMMIT="${{ steps.meta.outputs.commit }}"
+          PRERELEASE="${{ steps.meta.outputs.prerelease }}"
+          CHANGELOG="${{ steps.changelog.outputs.changelog }}"
+          PREV_TAG="${{ steps.changelog.outputs.prev_tag }}"
+
+          TITLE="${TAG}"
+          if [ "$PRERELEASE" = "true" ]; then
+            TITLE="${TAG} Pre-release"
+          fi
+
+          # Build body
+          cat > release_body.md <<BODY
+          ## Release info
+
+          | | |
+          |---|---|
+          | **Version** | ${VERSION} |
+          | **Channel** | ${CHANNEL} |
+          | **Commit** | ${COMMIT} |
+
+          ## Assets
+
+          | File | Description |
+          |------|-------------|
+          | button_card_templater-${VERSION}.zip | Integration package (extract to custom_components/) |
+
+          ## Changelog
+
+          ${CHANGELOG}
+          BODY
+
+          # Trim leading spaces from heredoc
+          sed -i 's/^          //' release_body.md
+          cat release_body.md
+
+          echo "title=${TITLE}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.body.outputs.title }}
+          body_path: release_body.md
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
+          files: |
+            button_card_templater-${{ steps.meta.outputs.version }}.zip
