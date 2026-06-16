@@ -15,6 +15,8 @@ A Home Assistant custom integration that adds a dedicated **editor panel** for [
 
 ---
 
+![Preview of the Button Card Templater interface](examples/person.png)
+
 ## Why?
 
 If you use [custom:button-card](https://github.com/custom-cards/button-card), you probably have a growing collection of templates at the top of your dashboard YAML. The problem:
